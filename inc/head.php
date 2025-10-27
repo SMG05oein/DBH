@@ -22,15 +22,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="..." crossorigin="anonymous"></script>
 <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">-->
 <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="..." crossorigin="anonymous">-->
-    <link rel="stylesheet" href="../css/main/main.style.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap.rtl.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-grid.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-grid.rtl.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-reboot.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-reboot.rtl.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-utilities.css" type="text/css">
-    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-utilities.rtl.css" type="text/css">
+    <link rel="stylesheet" href="../../css/main/main.style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/GNB/GNB.style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/Members/Members.style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap.rtl.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-grid.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-grid.rtl.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-reboot.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-reboot.rtl.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-utilities.css" type="text/css">
+    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-utilities.rtl.css" type="text/css">
     <title>데베헌 팀프로젝트</title>
 </head>
 <body>
+    <?php
+    include "../GNB/GNB.php";
+    ?>

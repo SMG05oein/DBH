@@ -1,6 +1,6 @@
 <?php
 //namespace DBH\inc;
-include "../config/connect.php";
+include "../../config/connect.php";
 
 /*
  * ***********************
