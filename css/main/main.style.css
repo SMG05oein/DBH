@@ -3,4 +3,10 @@ body{
     margin: 0;
 }
 
+.MyPre{
+    font-size: 2rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 /* end index */

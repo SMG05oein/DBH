@@ -4,12 +4,13 @@
  * 그 사이에 섹션을 통해 작업 공간을 만든 후에 작업해 주세요
  * */
 include("../inc/head.php");
-include "../inc/loader.php"
+include "../inc/loader.php";
+
 ?>
 
 <!--Begin Content-->
 <section>
-    <div></div>
+    <div class="d-flex"></div>
 </section>
 <!--End Content-->
 

@@ -4,7 +4,7 @@
  * 가능하면 이 파일은 건들지 말아주세요.
  * 수정을 해야할 떄는 팀원들에게 공지 후에 수정해주시길 바랍니다.
  *
- * 공지 후 수정을 안 해도 되는 경우
+ * 수정 후 공지를 안 해도 되는 경우
  * 1. css, js등 웹페이지 만들 때 직접적인 영향을 주는 파일을 불러올 때
  * 추후 추가...
  * */
@@ -20,9 +20,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="..." crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="..." crossorigin="anonymous">
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="..." crossorigin="anonymous">-->
     <link rel="stylesheet" href="../css/main/main.style.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap.rtl.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-grid.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-grid.rtl.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-reboot.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-reboot.rtl.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-utilities.css" type="text/css">
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap-utilities.rtl.css" type="text/css">
     <title>데베헌 팀프로젝트</title>
 </head>
 <body>
