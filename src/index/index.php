@@ -5,13 +5,12 @@
  * Head, GNB 등등을 상대경로로 지정을 해놔서 웹 페이지 만들 때 가능하면 폴더 만들고 그 안에 작업해주세요
  * */
 include("../../inc/head.php");
-include "../../inc/loader.php";
 
 ?>
 
 <!--Begin Content-->
 <section>
-    <div class="d-flex"></div>
+    <div class="d-flex justify-content-center align-content-center">Index임</div>
 </section>
 <!--End Content-->
 

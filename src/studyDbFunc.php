@@ -116,6 +116,14 @@ $bind = array(
                 <div class="mb-2 border border-1 border-dark">
                     <div class="mb-2">중복된 건 넘어감.</div>
                 </div>
+
+                <h5 class="text-danger  ">다섯 번째: 각 함수 오류 났을 때</h5>
+                <div class="mb-2 border border-1 border-dark">
+                    <div class="mb-2">함수에서 CUD작업 중 오류가 나면 true를 반환을 함. 그 값을 이용해서 예외처리하면 됩니다
+                        <br> Selcect 관련 함수는 true가 값이 없음. 못 찾음을 뜻 합니다.
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

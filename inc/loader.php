@@ -1,6 +1,6 @@
 <?php
 //namespace DBH\inc;
-include "../../config/connect.php";
+include_once "../../config/connect.php";
 
 /*
  * ***********************
@@ -76,15 +76,17 @@ function INSERT($table, $data, $debug='N'){
     }
     $result = $mysqli->query($sql);
     if ($result === TRUE) {
-        echo "새로운 레코드가 성공적으로 생성되었습니다.";
-        echo
-        "<script>
-                console.log('안녕');
-            </script>";
+//        echo "새로운 레코드가 성공적으로 생성되었습니다.";
+//        echo
+//        "<script>
+//                console.log('안녕');
+//            </script>";
+        return false;
+
     } else {
-        echo "오류: " . $sql . "<br>" . $mysqli->error;
+//        echo "오류: " . $sql . "<br>" . $mysqli->error;
+        return true;
     }
-    return false;
 }
 
 /*
@@ -152,12 +154,13 @@ function UPDATE($table, $data, $where, $debug='N'){
     $result = $mysqli->query($sql);
 
     if ($result === TRUE) {
-        echo "레코드가 성공적으로 업데이트되었습니다.";
-    } else {
-        echo "오류: " . $mysqli->error;
-    }
+//        echo "레코드가 성공적으로 업데이트되었습니다.";
+        return false;
 
-    return false;
+    } else {
+//        echo "오류: " . $mysqli->error;
+        return true;
+    }
 }
 
 /*
@@ -189,12 +192,12 @@ function DEL($table, $where, $debug='N'){
     $result=$mysqli->query($sql);
 
     if ($result === TRUE) {
-        echo "레코드가 성공적으로 삭제되었습니다.";
+//        echo "레코드가 성공적으로 삭제되었습니다.";
+        return false;
     } else {
-        echo "오류: " . $mysqli->error;
+//        echo "오류: " . $mysqli->error;
+        return true;
     }
-
-    return false;
 }
 
 /*
@@ -225,7 +228,7 @@ function O($sql, $bind = array(), $debug='N'){
             return $row;
         }
     }else{
-        return "빈 값";
+        return true;
     }
 }
 
@@ -257,7 +260,7 @@ function A($sql, $bind = array(), $debug='N'){
             $resultRow[] = $row;
         }
     }else{
-        return "빈 값";
+        return true;
     }
 
     return $resultRow;

@@ -1,3 +1,7 @@
+.GNB{
+    min-height: 50px;
+}
+
 .GNB a{
     color:black;
     text-decoration:none;

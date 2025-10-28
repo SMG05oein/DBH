@@ -8,6 +8,8 @@
  * 1. css, js등 웹페이지 만들 때 직접적인 영향을 주는 파일을 불러올 때
  * 추후 추가...
  * */
+include_once 'loader.php';
+
 ?>
 <!doctype html>
 <html lang="en">
