@@ -59,7 +59,7 @@ if($WhatIsForm == "1"){ //Login.php
     if($result){
         exit;
     }else{
-        echo "<script>location.href='/DBH/src/Members/Login.php'</script>";
+        echo "<script>location.href='/DBH/src/Members/Login.php';alert('성공적으로 회원 가입 되었습니다.')</script>";
     }
 }else if($WhatIsForm == "3"){ //유저 아이디 유효성 검사
     $userId = $_POST["userId"];

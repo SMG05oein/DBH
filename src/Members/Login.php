@@ -1,6 +1,6 @@
 <?php
 include("../../inc/head.php");
-include"./loginCheck.php";
+include "./isLogout.php";
 
 ?>
 
@@ -30,7 +30,7 @@ include"./loginCheck.php";
                 </div>
 
                 <div class="d-flex justify-content-center align-items-center gap-2">
-                    <button type="button" id="loginBtn" class="btn btn-primary w-75 mb-3">로그인</button>
+                    <button type="submit" id="loginBtn" class="btn btn-primary w-75 mb-3">로그인</button>
                     <a href="../index/index.php" class="btn btn-dark w-75 mb-3">홈으로</a>
                 </div>
 
@@ -48,8 +48,11 @@ include"./loginCheck.php";
 <script>
     const $loginForm = $('#loginForm')
     const loginBtn = $('#loginBtn')
-    loginBtn.on('click', (e) => {
+    $loginForm.on('submit', (e) => {
         e.preventDefault();
+        clickBtn();
+    })
+    function clickBtn(){
         $.ajax({
             url: "Auth_ok.php",
             method: "POST",
@@ -75,6 +78,11 @@ include"./loginCheck.php";
                 $('#alertDiv').text("서버와의 통신에 문제가 발생했습니다. " + error);
             }
         })
+    }
+
+    loginBtn.on('click', (e) => {
+        e.preventDefault();
+        clickBtn();
     })
 </script>
 
