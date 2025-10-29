@@ -84,7 +84,7 @@ function INSERT($table, $data, $debug='N'){
         return false;
 
     } else {
-//        echo "오류: " . $sql . "<br>" . $mysqli->error;
+        echo "오류: " . $sql . "<br>" . $mysqli->error;
         return true;
     }
 }
@@ -158,7 +158,7 @@ function UPDATE($table, $data, $where, $debug='N'){
         return false;
 
     } else {
-//        echo "오류: " . $mysqli->error;
+        echo "오류: " . $mysqli->error;
         return true;
     }
 }
@@ -195,7 +195,7 @@ function DEL($table, $where, $debug='N'){
 //        echo "레코드가 성공적으로 삭제되었습니다.";
         return false;
     } else {
-//        echo "오류: " . $mysqli->error;
+        echo "오류: " . $mysqli->error;
         return true;
     }
 }

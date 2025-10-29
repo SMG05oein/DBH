@@ -28,13 +28,13 @@ include_once 'loader.php';
     <link rel="stylesheet" href="../../css/GNB/GNB.style.css" type="text/css">
     <link rel="stylesheet" href="../../css/Members/Members.style.css" type="text/css">
     <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap.css" type="text/css">
-    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap.rtl.css" type="text/css">
-    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-grid.css" type="text/css">
-    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-grid.rtl.css" type="text/css">
-    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-reboot.css" type="text/css">
-    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-reboot.rtl.css" type="text/css">
-    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-utilities.css" type="text/css">
-    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-utilities.rtl.css" type="text/css">
+<!--    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap.rtl.css" type="text/css">-->
+<!--    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-grid.css" type="text/css">-->
+<!--    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-grid.rtl.css" type="text/css">-->
+<!--    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-reboot.css" type="text/css">-->
+<!--    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-reboot.rtl.css" type="text/css">-->
+<!--    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-utilities.css" type="text/css">-->
+<!--    <link rel="stylesheet" href="../../css/bootstrap/css/bootstrap-utilities.rtl.css" type="text/css">-->
     <title>데베헌 팀프로젝트</title>
 </head>
 <body>

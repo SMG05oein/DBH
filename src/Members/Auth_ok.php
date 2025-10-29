@@ -33,7 +33,7 @@ if($WhatIsForm == "1"){ //Login.php
 
         UPDATE($table, $data, $where);
 
-        $expire_time = time() + (60 * 10);
+        $expire_time = time() + (60 * 30); // 30분간 유효
         setcookie("user_id", $userId, $expire_time, "/");
         echo json_encode($response);
     }

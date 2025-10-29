@@ -1,5 +1,6 @@
 <?php
 $temp = isset($_COOKIE["user_id"])?$_COOKIE["user_id"]:0;
+$sql = "SELECT * FROM dbh.members WHERE user_id = '$temp'";
 if($temp !== 0){
     echo
     "<script>
@@ -18,4 +19,8 @@ if($temp !== 0){
     }
     </script>";
 }
+//$table = "dbh.members";
+//$data = array('login_yn' => 0);
+//$where = array('user_id' => $temp);
+//UPDATE($table, $data, $where);
 ?>

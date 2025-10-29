@@ -1,6 +1,6 @@
 <?php
 include("../../inc/head.php");
-include "./isLogout.php";
+//include "./isLogout.php";
 
 ?>
 
