@@ -6,9 +6,18 @@
  * */
 include("../../inc/head.php");
 
+$p = isset($_GET['p']) ? $_GET['p'] : 1;
 $keyFiled = isset($_GET['keyFiled']) ? $_GET['keyFiled'] : "";
 $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
 
+$sql = "SELECT * FROM dbh.members";
+$orderBy = '';
+
+list($rows,$cnt,$navi) = PAGE($sql, '' , 2, $orderBy, '');
+//rr($rows);
+//rr($cnt);
+
+//echo $navi;
 ?>
 
 <!--Begin Content-->
@@ -20,6 +29,7 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
                     <h4 class="fs-4 fw-bold text-primary mb-0">게시판</h4>
 
                     <form method="get" class="d-flex align-items-center">
+                        <input type="hidden" value="<?=$p?>" name="p">
                         <div class="d-flex gap-2">
                             <select name="keyFiled" class="form-select form-select-sm w-auto">
                                 <option value="">분류</option>
@@ -104,6 +114,82 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
     </div>
 </section>
 <!--End Content-->
+
+<?php
+// @add 2014-01-24
+$p_link = $_SERVER['QUERY_STRING'];
+
+$p_link = preg_replace("/p=[0-9]+&/", "", $p_link);
+$p_link = preg_replace("/(&?p=\d+)/", "", $p_link);
+
+$per_block		= 10;
+$total_block	= 0;
+$block			= 10;
+
+if(isset($total_page))
+{
+    $total_block=ceil($total_page/$per_block);
+}
+else
+{
+    $total_page	= 0;
+}
+if(isset($p))
+{
+    $block=ceil($p/$per_block);
+}
+else
+{
+    $p	= 1;
+}
+$first_page=($block-1) * $per_block;
+$last_page=$block * $per_block;
+
+if($total_block <= $block) $last_page=$total_page;
+
+echo ("
+<!-- paging -->
+<div id=\"pagination\"> 
+	<ul class=\"pagination\">
+");
+
+if($block > 1){
+    $myPage=$first_page;
+    echo ("<li class=\"page-item previous \"><A HREF=\"$_SERVER[PHP_SELF]?p=$myPage&$p_link\" class=\"page-link\"><i class=\"previous\"></i></A></li>");
+}else{
+    echo ("<li class=\"page-item previous disabled\"><a class=\"page-link\" href='javascript:void(0)'><i class=\"previous\"></i></A></li>");
+}
+
+
+for($DirectPage= $first_page + 1 ; $DirectPage <= $last_page ; $DirectPage++){
+    if($p == $DirectPage){
+        echo ("<li class=\"page-item active\"><a href='javascript:void(0)' class=\"page-link\">$DirectPage</a></li>");
+    }else{
+        echo ("<li class=\"page-item \"><A HREF=\"$_SERVER[PHP_SELF]?p=$DirectPage&$p_link\" class=\"page-link\">$DirectPage</A></li>");
+    }
+}
+
+if($block < $total_block){
+    $myPage=$last_page + 1;
+    echo ("<li class=\"page-item next\"><A HREF=\"$_SERVER[PHP_SELF]?p=$myPage&$p_link\" class=\"page-link\"><i class=\"next\"></i></A></li>");
+}else{
+    echo ("<li class=\"page-item next disabled\"><a class=\"page-link\" href='javascript:void(0)'><i class=\"next\"></i></a></li>");
+}
+
+echo ("</ul></div>
+<!-- paging* -->");
+?>
+
+<!--<ul class="pagination">
+	<li class="page-item previous disabled"><a href="#" class="page-link"><i class="previous"></i></a></li>
+	<li class="page-item "><a href="#" class="page-link">1</a></li>
+	<li class="page-item active"><a href="#" class="page-link">2</a></li>
+	<li class="page-item "><a href="#" class="page-link">3</a></li>
+	<li class="page-item "><a href="#" class="page-link">4</a></li>
+	<li class="page-item "><a href="#" class="page-link">5</a></li>
+	<li class="page-item "><a href="#" class="page-link">6</a></li>
+	<li class="page-item next"><a href="#"  class="page-link"><i class="next"></i></a></li>
+</ul>-->
 
 <?php
 include("../../inc/footer.php");

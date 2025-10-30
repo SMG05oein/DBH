@@ -270,3 +270,182 @@ function A($sql, $bind = array(), $debug='N'){
 
     return $resultRow;
 }
+
+/**
+ * 페이징 하는거
+ * !!주의 $sql 넘길 때 별칭 쓰지 마세요!!
+ */
+function PAGE($sql, $bind = array(), $pagesu = 10, $orderby="", $debug='N', $pagelength = 5, $page_func = 'PAGE_ADMIN')
+{
+
+    global $LINKSTATE;
+    $conn = $LINKSTATE;
+    // 전체 데이터 수
+    $cnt = CNT($sql, $bind);
+
+    // get 값으로 전달 되는 현재 페이지 넘버 |현재 페이지|
+    $page_no = (isset($_GET['p']) && $_GET['p']) ? $_GET['p'] : 1;
+
+    // pagesu 도 get 값 우선 |몇 개 가져옴?|
+    $pagesu = (isset($_GET['pagesu']) && $_GET['pagesu']) ? $_GET['pagesu'] : $pagesu;
+
+    // 데이터 뽑아 오는 시작 데이터 넘버
+    $start = ( $pagesu * ($page_no - 1 ) ) +1;
+    $end  = $pagesu * $page_no;
+
+    $sql = "
+	        SELECT * 
+	        FROM (
+	            SELECT *, ROW_NUMBER() OVER ( ". $orderby ." ) AS ROW_NUM
+                FROM ( " . $sql . " ) PAGE1
+	        ) PAGE2	       
+            WHERE ROW_NUM BETWEEN $start AND $end ";
+
+    //echo $sql;
+    $rows = A($sql, $bind, $debug);
+
+    list($navi,$page_count) = $page_func($pagesu, $pagelength, $cnt, $page_no);
+
+    // 데이터 넘버링
+//    if ($rows) {
+//        $row_start = $cnt - (($page_no -1) *  $pagesu);
+//        foreach ($rows as &$v) {
+//            $v['order_'] = $row_start;
+//            $row_start--;
+//        }
+//    }
+    return array($rows,$cnt,$navi,$page_count);
+}
+/* 예
+$sql = "select * from sms_template order by idx desc";
+list($rows,$cnt,$navi,$page_count) = PAGE($sql,array(),10,10,'PAGE_ADMIN');
+rr($rows);
+rr($cnt);
+rr($navi);
+rr($page_count);
+*/
+
+/**
+ * GetRow 함수를 짧게
+ */
+function CNT()
+{
+
+    list( $sql, $bind)= split_arg(func_get_args());
+    $neo_sql= sprintf("select count(*) as cnt from ( %s ) cnt_table", $sql);
+    $row = O($neo_sql, $bind);
+    return $row['cnt'];
+}
+
+/**
+ * 여기서만 쓰이는 놈임. array를 타이핑하기 싫어서 추가한 함수임
+ */
+function split_arg($a)
+{
+    $sql= $a[0];
+    if (count($a)>=1) {
+        array_shift($a);
+    }
+
+    if (isset($a[0])&& is_array($a[0])) {
+        $a= $a[0];
+    }
+    return array( $sql, $a);
+}
+
+/**
+ * 페이징 하는거 html 만들기
+ */
+function PAGE_ADMIN($pagesu = 10, $pagelength = 10, $cnt = 0, $page_no = 1)
+{
+    // 페이징 전체 데이터
+    $total_page_cnt = ceil($cnt/$pagesu);
+
+    $redirect_url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
+
+    $navi = '';
+    $navi .=
+        '<div id="pagination"> 
+	        <ul class="pagination">';
+    if ($total_page_cnt>0) {
+        // 0. 현재 페이지가 몇번째 그룹인지
+        $current = ceil($page_no / $pagelength);
+        $end = ($current * $pagelength) ;
+        if ($end>$total_page_cnt) {
+            $end = $total_page_cnt;
+        }
+        $start = $end - $pagelength +1 ;
+        if ($start<=0) {
+            $start = 1;
+        }
+        $next = $end + 1 ;
+        $prev = $start - $pagelength ;
+        /*
+        rr("current:".$current);
+        rr("start:".$start);
+        rr("end:".$end);
+        rr("prev:".$prev);
+        rr("next:".$next);
+        */
+
+        // 1. << 버튼 정보
+        if ($page_no>$pagelength) {
+            $myPage = $start - 1;
+            $navi .= "<li class=\"page-item previous \"><a class=\"page-link\" href='$redirect_url?p=$myPage'><i class=\"previous\"></i><</A></li>";
+        }else{
+            $navi .= ("<li class=\"page-item previous disabled\"><a class=\"page-link\" href='javascript:void(0)'><i class=\"previous\"></i><</A></li>");
+        }
+
+        // 2. 페이지 네비 만들기
+        for ($i = $start; $i<=$end; $i++) {
+            $active = "";
+            if ($page_no==$i) {
+                $active = "active";
+                $navi .= '<li class="page-item active"><a href=\'javascript:void(0)\' class="page-link">'.$i.'</a></li>';
+            }else{
+                $navi .= '<li class="page-item "><a href="'.$redirect_url."?".reset_get('page_no')."&p=".$i.'" data-page="'.$i.'" class="page-link">'.$i.'</A></li>';
+            }
+
+        }
+
+        // 3. >> 버튼 정보
+        if ($total_page_cnt>=$next) {
+            $myPage = $end+1;
+//            $pagesu += isset($_GET['p'])? $_GET['pagesu']:'';
+            $navi .= "<li class=\"page-item next\"><a class=\"page-link\" href='$redirect_url?p=$myPage'><i class=\"next\"></i>></a></li>";
+            //$navi .= '<a href="'.$redirect_url."?".reset_get('page_no')."&p=".$total_page_cnt.'" data-page="'.$total_page_cnt.'" class="blocks">&gt;&gt;</a>';
+        }else{
+            $navi .= ("<li class=\"page-item next disabled\"><a class=\"page-link\" href='javascript:void(0)'><i class=\"next\">></i></a></li>");
+        }
+    }
+
+    $navi .= '</ul></div>';
+    $page_count = '';//'<span class="loader-pagecount">'.$page_no."/".$total_page_cnt.' page</span>';
+    return array($navi,$page_count);
+}
+
+/**
+ * Reset GET
+ *
+ * $_GET 으로 넘오어는 변수들 중 인자로 넘어오는 문자열을 제외한 키와 값들을 하나의 문자열로 만들어줌
+ */
+function reset_GET()
+{
+    $re= array();
+    $args= func_get_args();
+    $args[]= '_url';
+    foreach ($_GET as $k => $v) {
+        if (!in_array($k, $args)) {
+            if (is_array($v)) {
+                foreach ($v as $vv) {
+                    $re[]= $k.'[]='.urlencode($vv);
+                }
+            } else {
+                $re[]= $k.'='.urlencode($v);
+            }
+        }
+    }
+
+
+    return implode('&', $re);
+}

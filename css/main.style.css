@@ -6,7 +6,7 @@ body{
 }
 
 .MyPre{
-    font-size: 2rem;
+    font-size: 1.4rem;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
@@ -29,3 +29,14 @@ header button {
     white-space: nowrap;
 }
 /* end index */
+
+
+/**/
+.pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* 공통 스타일: 두 아이콘 모두 인라인 블록, 크기, 위치 설정을 위해 필요 */
+
+/**/
