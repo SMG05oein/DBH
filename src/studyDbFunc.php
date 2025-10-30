@@ -1,6 +1,6 @@
 <?php
 include("../inc/head.php");
-include "../inc/loader.php";
+//include "../inc/loader.php";
 
 /**Begin INSERT*/
 $table = "dbh.members";

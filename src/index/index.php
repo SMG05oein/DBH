@@ -58,7 +58,7 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
                             <tr>
                                 <td class="text-center">10</td>
                                 <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-dark">공지사항입니다. 꼭 확인하세요!</a></td>
+                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
                                 <td class="text-center">관리자</td>
                                 <td class="text-center">2025.10.30</td>
                                 <td class="text-center">150</td>
@@ -66,7 +66,7 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
                             <tr>
                                 <td class="text-center">10</td>
                                 <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-dark">공지사항입니다. 꼭 확인하세요!</a></td>
+                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
                                 <td class="text-center">관리자</td>
                                 <td class="text-center">2025.10.30</td>
                                 <td class="text-center">150</td>
@@ -74,7 +74,7 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
                             <tr>
                                 <td class="text-center">10</td>
                                 <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-dark">공지사항입니다. 꼭 확인하세요!</a></td>
+                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
                                 <td class="text-center">관리자</td>
                                 <td class="text-center">2025.10.30</td>
                                 <td class="text-center">150</td>
@@ -82,7 +82,7 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
                             <tr>
                                 <td class="text-center">10</td>
                                 <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-dark">공지사항입니다. 꼭 확인하세요!</a></td>
+                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
                                 <td class="text-center">관리자</td>
                                 <td class="text-center">2025.10.30</td>
                                 <td class="text-center">150</td>
@@ -90,7 +90,7 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
                             <tr>
                                 <td class="text-center">10</td>
                                 <td class="text-center">자유</td>
-                                <td><a href="#" class="text-decoration-none text-dark">새로 리뉴얼된 게시판이 깔끔하네요.</a></td>
+                                <td><a href="#" class="text-decoration-none text-primary">새로 리뉴얼된 게시판이 깔끔하네요.</a></td>
                                 <td class="text-center">홍길동</td>
                                 <td class="text-center">2025.10.29</td>
                                 <td class="text-center">45</td>

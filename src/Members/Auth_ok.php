@@ -77,6 +77,15 @@ if($WhatIsForm == "1"){ //Login.php
 //    $response = ['empty' => count($row) == 1 ? "Empty" : "notEmpty"];
 //    echo json_encode($row);
 //    echo json_encode($response);
+}else if($WhatIsForm == "4"){ //회원 탈퇴
+    $userId = $_POST["user_id"];
+
+    $where = array('user_id' => $userId);
+    setcookie('user_id', "", time() - 3600, "/");
+//    exit;
+    DEL($table, $where,'');
+    echo "<script>location.href='/DBH/src/index/index.php';</script>";
+
 }
 
 

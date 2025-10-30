@@ -78,7 +78,12 @@ if($row === true){
 
                 <div class="card-footer d-grid gap-2 d-md-flex justify-content-md-end p-3">
                     <a class="btn btn-outline-primary" onclick="$('#MypageForm').submit()">정보 수정</a>
-                    <a class="btn btn-danger" id="logout" href="#">로그아웃</a>
+<!--                    <a class="btn btn-outline-danger" id="logout" href="#">로그아웃</a>-->
+                    <form method="POST" action="./Auth_ok.php">
+                        <input type="hidden" name="user_id" value="<?=$user_id?>">
+                        <input type="hidden" name="WhatIsForm" value=4>
+                        <button class="btn btn-outline-danger" id="logout" href="#">회원탈퇴</button>
+                    </form>
                 </div>
 
             </div>
