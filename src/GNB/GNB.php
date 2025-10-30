@@ -43,7 +43,7 @@ $row = O($sql);
 
     $('#login').on('click', (e) => {
         const l = $('#login').text().trim();
-        console.log(l);
+        // console.log(l);
         if(l === '로그아웃'){
             e.preventDefault();
             if(confirm('로그아웃 하시겠습니까?')) {
@@ -56,11 +56,13 @@ $row = O($sql);
 
                     /** 가능하할 때 ajax통해서 login_yn을 0으로 바꾸는 작업까지*/
                 }
+
+                console.log(l);
                 $.ajax({
                     url: "../Members/Auth_ok.php",
                     method: "POST",
                     data: {
-                        user_id: <?=$user_id?>,
+                        user_id: '<?=$user_id?>',
                         WhatIsForm: '9999'
                     },
                     dataType: 'json',
@@ -72,7 +74,13 @@ $row = O($sql);
                         } else {
                             alert("서버 오류 관리자한테 문의해주세요.");
                         }
+                    },error: (xhr, status, error) => {
+                        // 이 부분이 실행된다면 success가 호출되지 않은 것입니다.
+                        console.error("AJAX 요청 실패:", status, error);
+                        console.error("서버 응답:", xhr.responseText);
+                        alert("요청 중 오류가 발생했습니다. 자세한 내용은 콘솔을 확인하세요.");
                     }
+
                 })
             }
         }else{

@@ -1,7 +1,13 @@
 <?php
 //namespace DBH\inc;
 include_once "../../config/connect.php";
-
+$user_id = isset($_COOKIE["user_id"])? $_COOKIE["user_id"]:0;
+function isLogin(){
+    global $user_id;
+    $sql = "SELECT * FROM dbh.members WHERE user_id='$user_id'";
+    $row = O($sql);
+    return $row === true ? true : false; //값이 없으면(로그인을 안 했다면) 참
+}
 /*
  * ***********************
  * 이 파일은 유용한 함수들을 정의한 클래스 파일입니다.
@@ -109,10 +115,7 @@ function UPDATE($table, $data, $where, $debug='N'){
 
         if(strtoupper($v)=='GETDATE()' || strtoupper($v)=='NOW()'){
             $sql .= $k. "=now()";
-        } else if($v== null || $v== "null"){
-            $sql .= "$k=null";
-        }
-        else{
+        } else{
             $sql .= $k."='$v'";
         }
         $cnt ++;

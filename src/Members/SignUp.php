@@ -101,7 +101,7 @@ include("../../inc/head.php");
                 </div>
 
             </form>
-            <div>
+            <div class="mt-2">
                 <input type="checkbox" class="form-check-input">
                 <span>대충 개인정보 이용동의</span>
             </div>

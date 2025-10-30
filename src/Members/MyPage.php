@@ -2,11 +2,9 @@
 include("../../inc/head.php");
 $user_id = isset($_COOKIE["user_id"])? $_COOKIE["user_id"]:0;
 
-$sql = "SELECT * FROM dbh.members WHERE user_id='$user_id'";
-$row = O($sql);
 
-if($row === true){
-    echo "<script>alert('로그인 정보가 없습니다.'); location.href='/DBH/src/index/index.php'</script>";
+if(isLogin()){
+    echo "<script>alert('로그인 정보가 없습니다.'); location.href='/DBH/src/Members/Login.php'</script>";
 }else{
 //    rr($row);
     $user_pass = $row["user_pass"];
@@ -15,6 +13,7 @@ if($row === true){
     $birth = $row["birth"];
     $fk_department_code = $row["fk_department_code"];
     $reg_date = $row["reg_date"];
+    $phone = $row["phone"];
 
     $sql = "SELECT department_code,department_name FROM dbh.departments WHERE department_code='$fk_department_code'";
     $row = O($sql);
@@ -49,13 +48,22 @@ if($row === true){
                             </li>
 
                             <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <span class="fw-bold text-dark">전화번호</span>
+                                <div class="w-50 d-flex justify-content-between align-items-center">
+                                    <input type="text" class="form-control w-25 text-end" value="<?=substr($phone, 0,3)?>" name="phone1" id="birth"/>-
+                                    <input type="text" class="form-control w-25 text-end" value="<?=substr($phone, 3,4)?>" name="phone2" id="birth"/>-
+                                    <input type="text" class="form-control w-25 text-end" value="<?=substr($phone, 7,4)?>" name="phone3" id="birth"/>
+                                </div>
+                            </li>
+
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
                                 <span class="fw-bold text-dark">닉네임</span>
                                 <input class="text-success form-control w-25 text-end" type="text" value="<?=$nickname?>" name="nickname" id="nickname"/>
                             </li>
 
                             <li class="list-group-item d-flex justify-content-between align-items-center py-3">
                                 <span class="fw-bold text-dark">생년월일</span>
-                                <input type="date" class="form-control w-25 text-end" value="<?=$birth?>" name="birth" id="birth"/>
+                                <input type="date" class="form-control w-25 text-end" value="<?=$birth=='1970-01-01'? '' : $birth?>" name="birth" id="birth"/>
                             </li>
 
                             <li class="list-group-item d-flex justify-content-between align-items-center py-3">

@@ -1,7 +1,9 @@
 <?php
 include '../../inc/loader.php';
 //rr($_POST);
-
+if(isLogin()){
+    echo "<script>alert('잘못된 접근입니다.'); location.href='/DBH/src/Members/Login.php'</script>";
+}
 $WhatIsForm = $_POST["WhatIsForm"];
 
 $table = "members";
@@ -48,7 +50,7 @@ if($WhatIsForm == "1"){ //Login.php
     $phone1 = $_POST["phone1"];
     $phone2 = $_POST["phone2"];
     $phone3 = $_POST["phone3"];
-    $phone = $phone1."-".$phone2."-".$phone3;
+    $phone = $phone1.$phone2.$phone3;
     $data = array(
         "user_pass" => $password,
         "nickname" => $nickname,
@@ -90,7 +92,7 @@ if($WhatIsForm == "1"){ //Login.php
 
 
 
-else if($WhatIsForm == "9999"){
+else if($WhatIsForm == "9999"){ //로그아웃
     $userId = $_POST["user_id"];
     $response = ['answer'=>'YES'];
 //        exit;
