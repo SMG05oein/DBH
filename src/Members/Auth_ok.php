@@ -5,6 +5,7 @@ include '../../inc/loader.php';
 $WhatIsForm = $_POST["WhatIsForm"];
 
 $table = "members";
+//echo json_encode($WhatIsForm);
 
 //password_hash('문자열', PASSWORD_DEFAULT); /** 비번 DB에 암호화해서 넣을 거면 이 함수 쓰면 됨 */
 
@@ -44,7 +45,10 @@ if($WhatIsForm == "1"){ //Login.php
     $nickname = $_POST["nickname"];
     $userName = $_POST["userName"];
     $birth = $_POST["birth"];
-
+    $phone1 = $_POST["phone1"];
+    $phone2 = $_POST["phone2"];
+    $phone3 = $_POST["phone3"];
+    $phone = $phone1."-".$phone2."-".$phone3;
     $data = array(
         "user_pass" => $password,
         "nickname" => $nickname,
@@ -52,7 +56,8 @@ if($WhatIsForm == "1"){ //Login.php
         "user_name" => $userName,
         "birth" => $birth,
         'reg_date' => 'NOW()',
-        "login_yn" => '0'
+        "login_yn" => '0',
+        'phone' => $phone,
     );
 
     $result = INSERT($table,$data);
@@ -72,6 +77,26 @@ if($WhatIsForm == "1"){ //Login.php
 //    $response = ['empty' => count($row) == 1 ? "Empty" : "notEmpty"];
 //    echo json_encode($row);
 //    echo json_encode($response);
+}
+
+
+
+else if($WhatIsForm == "9999"){
+    $userId = $_POST["user_id"];
+    $response = ['answer'=>'YES'];
+//        exit;
+    $data = array(
+//        'last_login_date' => 'NOW()',
+        'login_yn' => 0
+    );
+
+    $where = array(
+        'user_id' => $userId,
+    );
+
+    UPDATE($table, $data, $where);
+    echo json_encode($response);
+
 }
 
 ?>

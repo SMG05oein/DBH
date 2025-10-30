@@ -13,10 +13,11 @@ $row = O($sql);
     </div>
 
     <div class="d-flex align-items-center gap-2">
-        <a>dsad</a>
-        <a>dsad</a>
-        <a>dsad</a>
-        <a>dsad</a>
+        <a href="../index/index.php">모두</a>
+        <a href="#">스포츠</a>
+        <a href="#">식사</a>
+        <a href="#">택시</a>
+        <a href="#">아웃팅</a>
     </div>
 
     <div class="d-flex justify-content-end align-items-center gap-2" style="width: 100%;">
@@ -25,7 +26,7 @@ $row = O($sql);
         </a>
         <?php if($user_id !== 0) {?>
             <a href="../Members/MyPage.php" class="LoginTools d-flex justify-content-center align-content-center ms-2">
-                마이페이지
+                <?=$row['user_name']?>님 마이페이지
             </a>
         <?php }else{?>
             <a href="../Members/SignUp.php" class="LoginTools d-flex justify-content-center align-content-center ms-2">
@@ -43,7 +44,7 @@ $row = O($sql);
     $('#login').on('click', (e) => {
         const l = $('#login').text().trim();
         console.log(l);
-        if(l == '로그아웃'){
+        if(l === '로그아웃'){
             e.preventDefault();
             if(confirm('로그아웃 하시겠습니까?')) {
                 function deleteCookie(name, path) {
@@ -55,8 +56,24 @@ $row = O($sql);
 
                     /** 가능하할 때 ajax통해서 login_yn을 0으로 바꾸는 작업까지*/
                 }
-                deleteCookie('user_id', '/');
-                location.href="/DBH/src/index/index.php";
+                $.ajax({
+                    url: "../Members/Auth_ok.php",
+                    method: "POST",
+                    data: {
+                        user_id: <?=$user_id?>,
+                        WhatIsForm: '9999'
+                    },
+                    dataType: 'json',
+                    success: (r) => {
+                        console.log("asd->", r);
+                        if (r.answer === 'YES') {
+                            deleteCookie('user_id', '/');
+                            location.href="/DBH/src/index/index.php";
+                        } else {
+                            alert("서버 오류 관리자한테 문의해주세요.");
+                        }
+                    }
+                })
             }
         }else{
 

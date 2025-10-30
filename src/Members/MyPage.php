@@ -18,8 +18,8 @@ if($row === true){
 
     $sql = "SELECT department_code,department_name FROM dbh.departments WHERE department_code='$fk_department_code'";
     $row = O($sql);
-    $department_code = $row["department_code"];
-    $department_name = $row["department_name"];
+    $department_code = isset($row["department_code"]) ? $row["department_code"] : "";
+    $department_name = isset($row["department_name"]) ? $row["department_name"] : "";
     $sql = "SELECT department_code,department_name FROM dbh.departments";
     $rows = A($sql);
 }
@@ -78,13 +78,55 @@ if($row === true){
 
                 <div class="card-footer d-grid gap-2 d-md-flex justify-content-md-end p-3">
                     <a class="btn btn-outline-primary" onclick="$('#MypageForm').submit()">정보 수정</a>
-                    <a class="btn btn-danger" href="Login.php">로그아웃</a>
+                    <a class="btn btn-danger" id="logout" href="#">로그아웃</a>
                 </div>
 
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    $('#logout').on('click', (e) => {
+        const l = $('#logout').text().trim();
+        console.log('a->',l);
+        if(l === '로그아웃'){
+            e.preventDefault();
+            if(confirm('로그아웃 하시겠습니까?')) {
+                function deleteCookie(name, path) {
+                    const expiredDate = 'Thu, 01 Jan 1970 00:00:00 UTC';
+
+                    // 2. document.cookie에 삭제할 쿠키 정보를 덮어씁니다.
+                    // 주의: name과 path는 설정 시와 반드시 일치해야 합니다.
+                    document.cookie = name + '=; expires=' + expiredDate + '; path=' + path;
+
+                    /** 가능하할 때 ajax통해서 login_yn을 0으로 바꾸는 작업까지*/
+                }
+                $.ajax({
+                    url: "../Members/Auth_ok.php",
+                    method: "POST",
+                    data: {
+                        user_id: <?=$user_id?>,
+                        WhatIsForm: '9999'
+                    },
+                    dataType: 'json',
+                    success: (r) => {
+                        console.log("asd->", r);
+                        if (r.answer === 'YES') {
+                            deleteCookie('user_id', '/');
+                            location.href="/DBH/src/index/index.php";
+                        } else {
+                            alert("서버 오류 관리자한테 문의해주세요.");
+                        }
+                    }
+                })
+            }
+        }else{
+
+        }
+    })
+
+</script>
 
 <?php
 include("../../inc/footer.php");

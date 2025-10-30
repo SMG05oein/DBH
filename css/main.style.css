@@ -1,0 +1,31 @@
+
+/* main.style.css는 모든 파일 또는 index.php에만 영향을 주는 css만 넣어주세요 */
+/* start index */
+body{
+    margin: 0;
+}
+
+.MyPre{
+    font-size: 2rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.GNB a {
+    /* 기본적으로 폰트 크기보다 작아지지 않도록 설정 */
+    flex-shrink: 0;
+    /* 또는 최소 너비를 내용물 너비만큼 설정 */
+    min-width: fit-content;
+    /* 추가적으로: 줄 바꿈 자체를 막으려면 */
+    white-space: nowrap;
+}
+
+header button {
+    /* 기본적으로 폰트 크기보다 작아지지 않도록 설정 */
+    flex-shrink: 0;
+    /* 또는 최소 너비를 내용물 너비만큼 설정 */
+    min-width: fit-content;
+    /* 추가적으로: 줄 바꿈 자체를 막으려면 */
+    white-space: nowrap;
+}
+/* end index */
