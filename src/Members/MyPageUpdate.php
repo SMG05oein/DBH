@@ -4,9 +4,8 @@ $user_id = isset($_COOKIE["user_id"])? $_COOKIE["user_id"]:0;
 
 //rr($_POST);
 $nickname = $_POST["nickname"];
-$birth = $_POST["birth"];
+$birth = $_POST["birth"]=='' ? $_POST["birth"] : "null";
 $department_code = $_POST["department_code"];
-
 $table = "dbh.members";
 $data = array(
     "nickname" => $nickname,

@@ -109,6 +109,8 @@ function UPDATE($table, $data, $where, $debug='N'){
 
         if(strtoupper($v)=='GETDATE()' || strtoupper($v)=='NOW()'){
             $sql .= $k. "=now()";
+        } else if($v== null || $v== "null"){
+            $sql .= "$k=null";
         }
         else{
             $sql .= $k."='$v'";
