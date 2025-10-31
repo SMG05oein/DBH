@@ -1,9 +1,9 @@
 <?php
 include '../../inc/loader.php';
 //rr($_POST);
-if(isLogin()){
-    echo "<script>alert('잘못된 접근입니다.'); location.href='/DBH/src/Members/Login.php'</script>";
-}
+//if(isLogin()){
+//    echo "<script>alert('잘못된 접근입니다.'); location.href='/DBH/src/Members/Login.php'</script>";
+//}
 $WhatIsForm = $_POST["WhatIsForm"];
 
 $table = "members";

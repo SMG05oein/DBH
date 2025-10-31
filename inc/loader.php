@@ -2,13 +2,17 @@
 //namespace DBH\inc;
 include_once "../../config/connect.php";
 $user_id = isset($_COOKIE["user_id"])? $_COOKIE["user_id"]:0;
+
+/**
+ * 로그인 함?
+ */
 function isLogin(){
     global $user_id;
     $sql = "SELECT * FROM dbh.members WHERE user_id='$user_id'";
     $row = O($sql);
     return $row === true ? true : false; //값이 없으면(로그인을 안 했다면) 참
 }
-/*
+/**
  * ***********************
  * 이 파일은 유용한 함수들을 정의한 클래스 파일입니다.
  * 이 파일에 대한 수정을 새로운 함수 정의에 대해서는 자유롭지만
@@ -22,7 +26,7 @@ class loader
 
 //////////////////////////// DB 관련 함수들 공통으로 사용 //////////////////////////////
 
-/*
+/**
  * print_r을 보기 좋게 바꾼 것
  * */
 function rr(){
@@ -35,7 +39,7 @@ function rr(){
     }
 }
 
-/*
+/**
  * INSERT 함수
  * */
 function INSERT($table, $data, $debug='N'){
@@ -95,7 +99,7 @@ function INSERT($table, $data, $debug='N'){
     }
 }
 
-/*
+/**
  * UPDATE 함수
  * */
 function UPDATE($table, $data, $where, $debug='N'){
@@ -168,7 +172,7 @@ function UPDATE($table, $data, $where, $debug='N'){
     }
 }
 
-/*
+/**
  * DELETE 함수
  * */
 function DEL($table, $where, $debug='N'){
@@ -205,7 +209,7 @@ function DEL($table, $where, $debug='N'){
     }
 }
 
-/*
+/**
  * Select One
  * */
 function O($sql, $bind = array(), $debug='N'){
@@ -237,7 +241,7 @@ function O($sql, $bind = array(), $debug='N'){
     }
 }
 
-/*
+/**
  * Select All
  * */
 function A($sql, $bind = array(), $debug='N'){
@@ -274,12 +278,22 @@ function A($sql, $bind = array(), $debug='N'){
 /**
  * 페이징 하는거
  * !!주의 $sql 넘길 때 별칭 쓰지 마세요!!
+ * 함수 파라미터 기본값 변경 후 푸시하는 금지
+ *
+ * -인자설명-
+ * 1. sql문
+ * 2. 바인딩 값
+ * 3. 한 번에 가져올 데이터 개수
+ * 4. SQL문법인데 정렬 기준입니다. 사용 예시는 알려드리겠습니다.
+ * 5. 디버그 할거야?
+ * ------------------------
+ * 이후 인자는 함수 호출 시에 변경하지 마세요.
+ * 6. 페이징 할 때 밑에 몇 개 보여? -> 이해 안 되면 7로 바꿔보세요.
+ * 7. 함수 이름
+ * ------------------------
  */
 function PAGE($sql, $bind = array(), $pagesu = 10, $orderby="", $debug='N', $pagelength = 5, $page_func = 'PAGE_ADMIN')
 {
-
-    global $LINKSTATE;
-    $conn = $LINKSTATE;
     // 전체 데이터 수
     $cnt = CNT($sql, $bind);
 
@@ -287,7 +301,7 @@ function PAGE($sql, $bind = array(), $pagesu = 10, $orderby="", $debug='N', $pag
     $page_no = (isset($_GET['p']) && $_GET['p']) ? $_GET['p'] : 1;
 
     // pagesu 도 get 값 우선 |몇 개 가져옴?|
-    $pagesu = (isset($_GET['pagesu']) && $_GET['pagesu']) ? $_GET['pagesu'] : $pagesu;
+//    $pagesu = (isset($_GET['pagesu']) && $_GET['pagesu']) ? $_GET['pagesu'] : $pagesu;
 
     // 데이터 뽑아 오는 시작 데이터 넘버
     $start = ( $pagesu * ($page_no - 1 ) ) +1;
@@ -356,7 +370,7 @@ function split_arg($a)
 /**
  * 페이징 하는거 html 만들기
  */
-function PAGE_ADMIN($pagesu = 10, $pagelength = 10, $cnt = 0, $page_no = 1)
+function PAGE_ADMIN($pagesu = 5, $pagelength = 10, $cnt = 0, $page_no = 1)
 {
     // 페이징 전체 데이터
     $total_page_cnt = ceil($cnt/$pagesu);
@@ -371,27 +385,27 @@ function PAGE_ADMIN($pagesu = 10, $pagelength = 10, $cnt = 0, $page_no = 1)
         // 0. 현재 페이지가 몇번째 그룹인지
         $current = ceil($page_no / $pagelength);
         $end = ($current * $pagelength) ;
+        $start = $end - $pagelength +1 ;
         if ($end>$total_page_cnt) {
             $end = $total_page_cnt;
         }
-        $start = $end - $pagelength +1 ;
         if ($start<=0) {
             $start = 1;
         }
         $next = $end + 1 ;
         $prev = $start - $pagelength ;
-        /*
+
         rr("current:".$current);
         rr("start:".$start);
         rr("end:".$end);
         rr("prev:".$prev);
         rr("next:".$next);
-        */
+
 
         // 1. << 버튼 정보
         if ($page_no>$pagelength) {
             $myPage = $start - 1;
-            $navi .= "<li class=\"page-item previous \"><a class=\"page-link\" href='$redirect_url?p=$myPage'><i class=\"previous\"></i><</A></li>";
+            $navi .= "<li class=\"page-item previous \"><a class=\"page-link\" href='$redirect_url?".reset_get('p')."&p=$myPage'><i class=\"previous\"></i><</A></li>";
         }else{
             $navi .= ("<li class=\"page-item previous disabled\"><a class=\"page-link\" href='javascript:void(0)'><i class=\"previous\"></i><</A></li>");
         }
@@ -403,7 +417,7 @@ function PAGE_ADMIN($pagesu = 10, $pagelength = 10, $cnt = 0, $page_no = 1)
                 $active = "active";
                 $navi .= '<li class="page-item active"><a href=\'javascript:void(0)\' class="page-link">'.$i.'</a></li>';
             }else{
-                $navi .= '<li class="page-item "><a href="'.$redirect_url."?".reset_get('page_no')."&p=".$i.'" data-page="'.$i.'" class="page-link">'.$i.'</A></li>';
+                $navi .= '<li class="page-item "><a href="'.$redirect_url."?".reset_get('p')."&p=".$i.'" data-page="'.$i.'" class="page-link">'.$i.'</A></li>';
             }
 
         }
@@ -412,7 +426,7 @@ function PAGE_ADMIN($pagesu = 10, $pagelength = 10, $cnt = 0, $page_no = 1)
         if ($total_page_cnt>=$next) {
             $myPage = $end+1;
 //            $pagesu += isset($_GET['p'])? $_GET['pagesu']:'';
-            $navi .= "<li class=\"page-item next\"><a class=\"page-link\" href='$redirect_url?p=$myPage'><i class=\"next\"></i>></a></li>";
+            $navi .= "<li class=\"page-item next\"><a class=\"page-link\" href='$redirect_url?".reset_get('p')."&p=$myPage'><i class=\"next\"></i>></a></li>";
             //$navi .= '<a href="'.$redirect_url."?".reset_get('page_no')."&p=".$total_page_cnt.'" data-page="'.$total_page_cnt.'" class="blocks">&gt;&gt;</a>';
         }else{
             $navi .= ("<li class=\"page-item next disabled\"><a class=\"page-link\" href='javascript:void(0)'><i class=\"next\">></i></a></li>");

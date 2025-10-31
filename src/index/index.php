@@ -13,7 +13,7 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
 $sql = "SELECT * FROM dbh.members";
 $orderBy = '';
 
-list($rows,$cnt,$navi) = PAGE($sql, '' , 2, $orderBy, '');
+list($rows,$cnt,$navi) = PAGE($sql, '' , 1, $orderBy, '');
 //rr($rows);
 //rr($cnt);
 
@@ -45,21 +45,21 @@ list($rows,$cnt,$navi) = PAGE($sql, '' , 2, $orderBy, '');
         </div>
 
         <div class="row">
-            <div class="col-12 py-4 bg-light border rounded">
-
+            <div class="col-12 py-4 bg-white border rounded shadow-sm">
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="#" class="btn btn-primary">게시글 등록</a>
+                    <a href="#" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil-square me-1"></i> 게시글 등록
+                    </a>
                 </div>
 
                 <div class="py-3">
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped">
-                            <thead>
-                            <tr>
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead class="table-light">
+                            <tr class="fw-bold">
                                 <th class="text-center" style="width: 8%;">NO</th>
                                 <th class="text-center" style="width: 15%;">카테고리</th>
-                                <th class="text-center">제목</th>
-                                <th class="text-center" style="width: 12%;">작성자</th>
+                                <th class="text-start">제목</th> <th class="text-center" style="width: 12%;">작성자</th>
                                 <th class="text-center" style="width: 15%;">작성일</th>
                                 <th class="text-center" style="width: 10%;">조회</th>
                             </tr>
@@ -68,45 +68,48 @@ list($rows,$cnt,$navi) = PAGE($sql, '' , 2, $orderBy, '');
                             <tr>
                                 <td class="text-center">10</td>
                                 <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
+                                <td class="text-start"><a href="#" class="text-decoration-none text-dark fw-bold">공지사항입니다. 꼭 확인하세요!</a></td>
                                 <td class="text-center">관리자</td>
                                 <td class="text-center">2025.10.30</td>
                                 <td class="text-center">150</td>
                             </tr>
                             <tr>
-                                <td class="text-center">10</td>
+                                <td class="text-center">9</td>
                                 <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
+                                <td class="text-start"><a href="#" class="text-decoration-none text-dark fw-bold">중요한 변경 사항에 대한 안내</a></td>
                                 <td class="text-center">관리자</td>
                                 <td class="text-center">2025.10.30</td>
                                 <td class="text-center">150</td>
                             </tr>
                             <tr>
-                                <td class="text-center">10</td>
-                                <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
-                                <td class="text-center">관리자</td>
-                                <td class="text-center">2025.10.30</td>
-                                <td class="text-center">150</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">10</td>
-                                <td class="text-center">공지</td>
-                                <td><a href="#" class="text-decoration-none text-primary">공지사항입니다. 꼭 확인하세요!</a></td>
-                                <td class="text-center">관리자</td>
-                                <td class="text-center">2025.10.30</td>
-                                <td class="text-center">150</td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">10</td>
+                                <td class="text-center">8</td>
                                 <td class="text-center">자유</td>
-                                <td><a href="#" class="text-decoration-none text-primary">새로 리뉴얼된 게시판이 깔끔하네요.</a></td>
+                                <td class="text-start"><a href="#" class="text-decoration-none text-dark">날씨가 많이 쌀쌀해졌네요. 감기 조심하세요!</a></td>
+                                <td class="text-center">사용자A</td>
+                                <td class="text-center">2025.10.30</td>
+                                <td class="text-center">98</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">7</td>
+                                <td class="text-center">질문</td>
+                                <td class="text-start"><a href="#" class="text-decoration-none text-dark">PHP에서 세션을 관리하는 가장 좋은 방법은 무엇인가요?</a></td>
+                                <td class="text-center">질문러</td>
+                                <td class="text-center">2025.10.30</td>
+                                <td class="text-center">21</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">6</td>
+                                <td class="text-center">자유</td>
+                                <td class="text-start"><a href="#" class="text-decoration-none text-dark">새로 리뉴얼된 게시판이 깔끔하네요.</a></td>
                                 <td class="text-center">홍길동</td>
                                 <td class="text-center">2025.10.29</td>
                                 <td class="text-center">45</td>
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="d-flex justify-content-center pt-2">
+                        <?= $navi;?>
                     </div>
                 </div>
             </div>
