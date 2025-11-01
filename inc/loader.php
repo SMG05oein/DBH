@@ -2,7 +2,7 @@
 //namespace DBH\inc;
 include_once "../../config/connect.php";
 $user_id = isset($_COOKIE["user_id"])? $_COOKIE["user_id"]:0;
-
+$LOCATIONINDEX = '/DBH/src/index/index.php';
 /**
  * 로그인 함?
  */
@@ -277,7 +277,6 @@ function A($sql, $bind = array(), $debug='N'){
 
 /**
  * 페이징 하는거
- * !!주의 $sql 넘길 때 별칭 쓰지 마세요!!
  * 함수 파라미터 기본값 변경 후 푸시하는 금지
  *
  * -인자설명-
@@ -287,7 +286,7 @@ function A($sql, $bind = array(), $debug='N'){
  * 4. SQL문법인데 정렬 기준입니다. 사용 예시는 알려드리겠습니다.
  * 5. 디버그 할거야?
  * ------------------------
- * 이후 인자는 함수 호출 시에 변경하지 마세요.
+ * 이후 인자는 함수 호출 시에 값을 넣지 마세요.
  * 6. 페이징 할 때 밑에 몇 개 보여? -> 이해 안 되면 7로 바꿔보세요.
  * 7. 함수 이름
  * ------------------------
@@ -395,12 +394,13 @@ function PAGE_ADMIN($pagesu = 5, $pagelength = 10, $cnt = 0, $page_no = 1)
         $next = $end + 1 ;
         $prev = $start - $pagelength ;
 
+        /*
         rr("current:".$current);
         rr("start:".$start);
         rr("end:".$end);
         rr("prev:".$prev);
         rr("next:".$next);
-
+        */
 
         // 1. << 버튼 정보
         if ($page_no>$pagelength) {

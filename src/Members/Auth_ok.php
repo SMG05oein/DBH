@@ -36,7 +36,7 @@ if($WhatIsForm == "1"){ //Login.php
 
         UPDATE($table, $data, $where);
 
-        $expire_time = time() + (60 * 30); // 30분간 유효
+        $expire_time = time() + (60 * 30 * 2 * 24); // 30분간 유효 | *2*24로 하루 유효
         setcookie("user_id", $userId, $expire_time, "/");
         echo json_encode($response);
     }
