@@ -82,7 +82,7 @@ if($checkForm == '1'){ //게시글 등록
     $temp_where = array(
         'board_id' => $board_id,
     );
-//    UPDATE($board_table, $temp_data, $temp_where, '');
+    UPDATE($board_table, $temp_data, $temp_where, '');
     /** End 6 */
 
     /** Begin 7 */
