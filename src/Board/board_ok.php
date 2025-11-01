@@ -36,7 +36,7 @@ if($checkForm == '1'){ //게시글 등록
         'real_yn' => 1,
         'hits' => 0,
     );
-//    INSERT($board_table, $board_data, '');
+    INSERT($board_table, $board_data, '');
     /** End 1,2 */;
 
     /** Begin 3 */
@@ -54,7 +54,7 @@ if($checkForm == '1'){ //게시글 등록
             'fk_board_id' => $board_id,
             'fk_category_id' => $r,
         );
-//        INSERT($board_category_table, $data, '');
+        INSERT($board_category_table, $data, '');
     }
     /** End 4 */
 
