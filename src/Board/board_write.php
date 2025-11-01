@@ -74,7 +74,8 @@ if(isLogin() && !$toIndex){
                         <div id="categoryDIV" class="d-flex gap-2">
                             <?php if(isset($Crow)){foreach($Crow as $row):?>
                             <div class="category-item-container d-flex align-items-center gap-2 border rounded p-1 ps-2">
-                                <input type='hidden' name='category_id[]' value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
+                                <!--어... name속성 제거-->
+                                <input type='hidden' name='' value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
                                 <div class="fw-semibold"><?=isset($row['category_name']) ? $row['category_name'] : ''?></div>
                                 <button type="button" class="btn btn-danger btn-sm delete-category-btn">삭제</button>
                             </div>
