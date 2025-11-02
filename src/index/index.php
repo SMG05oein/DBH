@@ -9,9 +9,9 @@ include("../../inc/head.php");
 $p = isset($_GET['p']) ? $_GET['p'] : 1;
 $keyFiled = isset($_GET['keyFiled']) ? $_GET['keyFiled'] : "";
 $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
-
+$where = ' where '.$keyFiled.' like "%'.$keyWord.'%"';
 $sql = "SELECT b.*, m.user_name FROM board b
-        inner join members m on b.fk_member_id = m.member_id";
+        inner join members m on b.fk_member_id = m.member_id" . $where;
 $orderBy = 'ORDER BY board_id DESC';
 
 list($rows,$cnt,$navi) = PAGE($sql, '' , 10, $orderBy, '');
@@ -33,14 +33,14 @@ $cnt = $cnt - (($p-1) * 10);
                     <h4 class="fs-4 fw-bold text-primary mb-0">게시판</h4>
 
                     <form method="get" class="d-flex align-items-center">
-                        <input type="hidden" value="<?=$p?>" name="p">
+<!--                        <input type="hidden" value="--><?php //=$p?><!--" name="p">-->
                         <div class="d-flex gap-2">
                             <select name="keyFiled" class="form-select form-select-sm w-auto">
                                 <option value="">분류</option>
                                 <option value="title" <?=$keyFiled == "title"? "selected":""?>>제목</option>
-                                <option value="category" <?=$keyFiled == "category"? "selected":""?>>카테고리</option>
+                                <!--<option value="category" <?=$keyFiled == "category"? "selected":""?>>카테고리</option>-->
                             </select>
-                            <input type="text" name="keyWord" class="form-control form-control-sm" placeholder="검색어를 입력하세요">
+                            <input type="text" name="keyWord" class="form-control form-control-sm" value="<?=$keyWord?>" placeholder="검색어를 입력하세요">
                             <button class="btn btn-dark btn-sm d-flex align-items-center">검색</button>
                         </div>
                     </form>

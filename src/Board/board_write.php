@@ -1,13 +1,18 @@
 <?php
 include("../../inc/head.php");
 $toIndex = isset($_GET["toIndex"]) || false;
+$user_id = isset($_COOKIE["user_id"])? $_COOKIE["user_id"]:0;
+
 if(isLogin() && !$toIndex){
     echo "<script>alert('로그인 후 이용해주세요.'); location.href='/DBH/src/Members/Login.php'</script>";
 }else{
+    $disabled = 'disabled';
 //    echo $board_id;
     if(isset($_GET['board_id'])){
         $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : '';
-        $sql = "SELECT * FROM board WHERE board_id = $board_id ";
+        $sql = "SELECT b.*, m.user_id FROM board b
+                inner join members m on m.member_id = b.fk_member_id
+                WHERE board_id = $board_id ";
         $board_row = O($sql, '' , '');
         $hits = $board_row['hits'] + 1; //트리거 만들어서 해도 될 듯?
         UPDATE('board', array('hits' => $hits), array('board_id' => $board_id));
@@ -23,6 +28,19 @@ if(isLogin() && !$toIndex){
     }
     $category_sql = "SELECT * FROM dbh.categories";
     $category_rows = A($category_sql);
+    $userEqWriter = '';
+    if(!isset($_GET['board_id'])) {
+//        echo 'sss';
+        $userEqWriter = 0;
+    }
+    else{
+        $userEqWriter = (isset($_GET['board_id'])) && ($user_id != $board_row['user_id']);
+    //    echo (($user_id == ($board_row['user_id'])) || !isset($board_row['user_id']));
+    //    echo $user_id . ' '. $board_row['user_id'].' '.'<br>';
+//        echo 'ss'.$userEqWriter;
+//        echo 'aa'.isset($_GET['board_id']);
+//        echo $user_id == $board_row['user_id'];
+    }
 
 }
 
@@ -39,8 +57,11 @@ if(isLogin() && !$toIndex){
                 <form action="board_ok.php" method="POST" id="asdf" class="border border-1 p-3 rounded shadow-sm">
                     <input type="hidden" name="checkForm" value="<?=isset($board_row['board_id'])? 2 : 1?>">
                     <div class="mb-3">
-                        <label for="postTitle" class="form-label fw-semibold">제목</label>
-                        <input type="text"
+                        <label for="postTitle" class="form-label fw-semibold d-flex">
+                            <div>제목</div>
+                            <div class="flex-end ms-auto" style="display: <?=isset($board_id)?'block':'none'?>">조회수: <?=$board_row['hits']?></div>
+                        </label>
+                        <input type="text" <?=$userEqWriter? $disabled: ''?>
                                class="form-control"
                                id="postTitle"
                                name="title"
@@ -51,7 +72,7 @@ if(isLogin() && !$toIndex){
 
                     <div class="mb-3">
                         <label for="postContent" class="form-label fw-semibold">내용</label>
-                        <textarea class="form-control"
+                        <textarea class="form-control" <?=$userEqWriter? $disabled: ''?>
                                   id="postContent"
                                   name="content"
                                   rows="4"
@@ -87,7 +108,7 @@ if(isLogin() && !$toIndex){
                         <label for="postContent" class="mt-1 form-label fw-semibold d-flex justify-content-center text-center">활동등록</label>
                         <div class="row pt-2"> <div class="col-md-4 mb-3">
                                 <label for="startDate" class="form-label">시작일</label>
-                                <input type="date"
+                                <input type="date" <?=$userEqWriter? $disabled: ''?>
                                        class="form-control"
                                        id="startDate"
                                        name="start_date"
@@ -96,7 +117,7 @@ if(isLogin() && !$toIndex){
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="endDate" class="form-label">종료일</label>
-                                <input type="date"
+                                <input type="date" <?=$userEqWriter? $disabled: ''?>
                                        class="form-control"
                                        id="endDate"
                                        name="end_date"
@@ -105,7 +126,7 @@ if(isLogin() && !$toIndex){
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="memberCount" class="form-label">인원수</label>
-                                <input type="number"
+                                <input type="number" <?=$userEqWriter? $disabled: ''?>
                                        class="form-control"
                                        id="memberCount"
                                        name="member_count"
@@ -115,11 +136,19 @@ if(isLogin() && !$toIndex){
                                        required>
                             </div>
                         </div>
+                        <?php if(isset($board_id)){?>
+                        <div class="d-flex justify-content-center align-content-center gap-2">
+                            <div>( / )</div>
+                            <button type="button" class="btn btn-sm btn-primary">신청</button>
+                        </div>
+                        <?php }?>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a onclick="location.href='<?=$LOCATIONINDEX?>'" class="btn btn-secondary">취소</a>
-                        <button type="submit" class="btn btn-primary" id="submitBtn">등록</button>
+                        <?php if(!$userEqWriter){?>
+                        <button type="submit" class="btn btn-primary" id="submitBtn"><?=isset($board_id)? "수정" : "등록"?></button>
+                        <?php }?>
                     </div>
 
                 </form>
