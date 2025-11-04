@@ -96,7 +96,7 @@ if(isLogin() && !$toIndex){
                             <?php if(isset($Crow)){foreach($Crow as $row):?>
                             <div class="category-item-container d-flex align-items-center gap-2 border rounded p-1 ps-2">
                                 <!--어... name속성 제거-->
-                                <input type='hidden' name='' value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
+                                <input type='hidden' name='' id="category_id[]" value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
                                 <div class="fw-semibold"><?=isset($row['category_name']) ? $row['category_name'] : ''?></div>
                                 <button type="button" class="btn btn-danger btn-sm delete-category-btn">삭제</button>
                             </div>
@@ -166,14 +166,14 @@ if(isLogin() && !$toIndex){
             alert('카테고리를 선택해주세요.');
             return;
         }
-        if ($(`input[name='category_id[]'][value='${categoryId}']`).length > 0) {
+        if ($(`input[id='category_id[]'][value='${categoryId}']`).length > 0) {
             alert('이미 등록된 카테고리입니다.');
             return;
         }
         const newCategoryItem =
             `
             <div class="category-item-container d-flex align-items-center gap-2 border rounded p-1 ps-2">
-                <input type='hidden' name='category_id[]' value='${categoryId}'>
+                <input type='hidden' name='category_id[]' id='[category_id' value='${categoryId}'>
                 <div class="fw-semibold">${category}</div>
                 <button type="button" class="btn btn-danger btn-sm delete-category-btn">삭제</button>
             </div>
