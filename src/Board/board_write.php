@@ -65,7 +65,7 @@ if(isLogin() && !$toIndex){
                     <div class="mb-3">
                         <label for="postTitle" class="form-label fw-semibold d-flex">
                             <div>제목</div>
-                            <div class="flex-end ms-auto" style="display: <?=isset($board_id)?'block':'none'?>">조회수: <?=$board_row['hits']?></div>
+                            <div class="flex-end ms-auto" style="display: <?=isset($board_id)?'block':'none'?>">조회수: <?=$board_row['hits'] + 1?></div>
                         </label>
                         <input type="text" <?=$userEqWriter? $disabled: ''?>
                                class="form-control"
