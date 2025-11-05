@@ -215,23 +215,34 @@ function DEL($table, $where, $debug='N'){
 function O($sql, $bind = array(), $debug='N'){
     global $mysqli;
 
-    $where = " ";
+//    $where = " ";
     $cnt = 0;
-    if($bind != null){
-        $where = " WHERE ";
-        foreach($bind as $k=>$v){
-            $where .= ($cnt==0)? $k."='$v'" : "AND $k"."='$v'";
-            $cnt++;
-        }
-    }
-    $sql .= $where;
+//    if($bind != null){
+//        $where = " WHERE ";
+//        foreach($bind as $k=>$v){
+//            $where .= ($cnt==0)? $k."='$v'" : "AND $k"."='$v'";
+//            $cnt++;
+//        }
+//    }
+//    $sql .= $where;
 
+
+    if(is_array($bind)){
+        $temp = 0;
+        foreach($bind as $k=>$v){
+    //        echo $k."=".$v."<br>";
+            $temp = $v;
+        }
+        if($temp){
+            $sql = mssql_prepare($sql, $bind, $debug);
+        }
+
+    }
     if($debug=='Y'){
         rr($sql); exit;
     }
 
     $result = $mysqli->query($sql);
-
     if($result->num_rows > 0){
         while($row = $result->fetch_assoc()){
             return $row;
@@ -247,16 +258,19 @@ function O($sql, $bind = array(), $debug='N'){
 function A($sql, $bind = array(), $debug='N'){
     global $mysqli;
 
-    $where = " ";
-    $cnt = 0;
-    if($bind != null){
-        $where = " WHERE ";
-        foreach($bind as $k=>$v){
-            $where .= ($cnt==0)? $k."='$v'" : "AND $k"."='$v'";
-            $cnt++;
-        }
+//    $where = " ";
+//    $cnt = 0;
+//    if($bind != null){
+//        $where = " WHERE ";
+//        foreach($bind as $k=>$v){
+//            $where .= ($cnt==0)? $k."='$v'" : "AND $k"."='$v'";
+//            $cnt++;
+//        }
+//    }
+//    $sql .= $where;
+    if(is_array($bind) && !empty($bind)){
+        $sql = mssql_prepare($sql, $bind, $debug);
     }
-    $sql .= $where;
 
     if($debug=='Y'){
         rr($sql); exit;
@@ -273,6 +287,39 @@ function A($sql, $bind = array(), $debug='N'){
     }
 
     return $resultRow;
+}
+
+function mssql_prepare ($query, $phs = array(),$dubug='N') {
+
+    foreach ($phs as $ph) {
+        $ph = "'" . ms_escape_string($ph) . "'";
+        $query = substr_replace(
+            $query, $ph, strpos($query, '?'), 1
+        );
+    }
+
+    if($dubug=='Y'){
+        rr($query); exit;
+    }
+
+    return $query;
+}
+
+function ms_escape_string($data) {
+    if ( !isset($data) or empty($data) ) return '';
+    if ( is_numeric($data) ) return $data;
+
+    $non_displayables = array(
+        '/%0[0-8bcef]/',            // url encoded 00-08, 11, 12, 14, 15
+        '/%1[0-9a-f]/',             // url encoded 16-31
+        '/[\x00-\x08]/',            // 00-08
+        '/\x0b/',                   // 11
+        '/\x0c/',                   // 12
+        '/[\x0e-\x1f]/'             // 14-31
+    );
+    foreach ( $non_displayables as $regex )
+        $data = preg_replace( $regex, '', $data );
+    return str_replace("'", "''", $data );
 }
 
 /**
@@ -346,7 +393,8 @@ function CNT()
 
     list( $sql, $bind)= split_arg(func_get_args());
     $neo_sql= sprintf("select count(*) as cnt from ( %s ) cnt_table", $sql);
-    $row = O($neo_sql, $bind);
+    $bind = is_array($bind) ? $bind : '';
+    $row = O($neo_sql, $bind, "");
     return $row['cnt'];
 }
 

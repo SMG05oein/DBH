@@ -12,9 +12,12 @@ $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
 $where = '';
 if($keyFiled != ""){
     $where = ' where '.$keyFiled.' like "%'.$keyWord.'%"';
+}else{
+    $where = ' ';
 }
+//echo $where;
 $sql = "SELECT b.*, m.user_name FROM board b
-        inner join members m on b.fk_member_id = m.member_id" . $where;
+        inner join members m on b.fk_member_id = m.member_id " . $where;
 $orderBy = 'ORDER BY board_id DESC';
 
 list($rows,$cnt,$navi) = PAGE($sql, '' , 10, $orderBy, '');

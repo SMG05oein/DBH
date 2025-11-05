@@ -12,14 +12,18 @@ if(isLogin() && !$toIndex){
         $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : '';
         $sql = "SELECT b.*, m.user_id FROM board b
                 inner join members m on m.member_id = b.fk_member_id
-                WHERE board_id = $board_id ";
-        $board_row = O($sql, '' , '');
+                WHERE board_id = ?";
+        $bind = array('board_id' => $board_id);
+        $board_row = O($sql, $bind , '');
+
         $hits = $board_row['hits'] + 1; //트리거 만들어서 해도 될 듯?
         UPDATE('board', array('hits' => $hits), array('board_id' => $board_id));
+
         $sql = "SELECT * FROM board
                 inner join activity on activity_id = fk_activity_id
                 WHERE board_id = $board_id ";
         $Trow=O($sql, '' , '');
+
         $sql = "SELECT * FROM board_categories 
                 inner join categories on category_id = fk_category_id
                 WHERE fk_board_id = $board_id ";
@@ -96,7 +100,7 @@ if(isLogin() && !$toIndex){
                             <?php if(isset($Crow)){foreach($Crow as $row):?>
                             <div class="category-item-container d-flex align-items-center gap-2 border rounded p-1 ps-2">
                                 <!--어... name속성 제거-->
-                                <input type='hidden' name='' id="category_id[]" value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
+                                <input type='hidden' name='' id="category_id" value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
                                 <div class="fw-semibold"><?=isset($row['category_name']) ? $row['category_name'] : ''?></div>
                                 <button type="button" class="btn btn-danger btn-sm delete-category-btn">삭제</button>
                             </div>
@@ -166,14 +170,14 @@ if(isLogin() && !$toIndex){
             alert('카테고리를 선택해주세요.');
             return;
         }
-        if ($(`input[id='category_id[]'][value='${categoryId}']`).length > 0) {
+        if ($(`input[id='category_id'][value='${categoryId}']`).length > 0) {
             alert('이미 등록된 카테고리입니다.');
             return;
         }
         const newCategoryItem =
             `
             <div class="category-item-container d-flex align-items-center gap-2 border rounded p-1 ps-2">
-                <input type='hidden' name='category_id[]' id='[category_id' value='${categoryId}'>
+                <input type='hidden' name='category_id[]' id='category_id' value='${categoryId}'>
                 <div class="fw-semibold">${category}</div>
                 <button type="button" class="btn btn-danger btn-sm delete-category-btn">삭제</button>
             </div>
