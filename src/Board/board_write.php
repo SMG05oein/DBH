@@ -21,13 +21,15 @@ if(isLogin() && !$toIndex){
 
         $sql = "SELECT * FROM board
                 inner join activity on activity_id = fk_activity_id
-                WHERE board_id = $board_id ";
-        $Trow=O($sql, '' , '');
+                WHERE board_id = ? ";
+        $bind = array('board_id' => $board_id);
+        $Trow=O($sql, $bind , '');
 
         $sql = "SELECT * FROM board_categories 
                 inner join categories on category_id = fk_category_id
-                WHERE fk_board_id = $board_id ";
-        $Crow=A($sql, '' , '');
+                WHERE fk_board_id = ? ";
+        $bind = array('fk_board_id' => $board_id);
+        $Crow=A($sql, $bind , '');
 //        rr($Crow);
     }
     $category_sql = "SELECT * FROM dbh.categories";

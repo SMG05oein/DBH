@@ -269,7 +269,15 @@ function A($sql, $bind = array(), $debug='N'){
 //    }
 //    $sql .= $where;
     if(is_array($bind) && !empty($bind)){
-        $sql = mssql_prepare($sql, $bind, $debug);
+        $temp = 0;
+        foreach($bind as $k=>$v){
+            //        echo $k."=".$v."<br>";
+            $temp = $v;
+        }
+        if($temp){
+            $sql = mssql_prepare($sql, $bind, $debug);
+        }
+//        $sql = mssql_prepare($sql, $bind, $debug);
     }
 
     if($debug=='Y'){
@@ -291,8 +299,9 @@ function A($sql, $bind = array(), $debug='N'){
 
 function mssql_prepare ($query, $phs = array(),$dubug='N') {
 
+//    echo $query;
     foreach ($phs as $ph) {
-        $ph = "'" . ms_escape_string($ph) . "'";
+//        $ph = "'" . ms_escape_string($ph) . "'";
         $query = substr_replace(
             $query, $ph, strpos($query, '?'), 1
         );
