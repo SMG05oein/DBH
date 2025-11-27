@@ -10,10 +10,10 @@
  * */
 
 $DBCONF = array();
-$DBCONF['host'] = "";
-$DBCONF['user'] = "";
-$DBCONF['pass'] = "";
-$DBCONF['dbname'] = "";
+$DBCONF['host'] = "localhost";
+$DBCONF['user'] = "root";
+$DBCONF['pass'] = "SMG05!eoin";
+$DBCONF['dbname'] = "dbh";
 
 $mysqli = new mysqli($DBCONF['host'], $DBCONF['user'],$DBCONF['pass'],$DBCONF['dbname']);
 
@@ -21,10 +21,10 @@ if ($mysqli->connect_error) {
     die("연결 실패: " . $mysqli->connect_error);
 }
 
-echo
-"<script>
-console.log('DB 연결 성공');
-</script>";
+//echo
+//"<script>
+//console.log('DB 연결 성공');
+//</script>";
 
 ?>
 

@@ -11,13 +11,17 @@ $keyFiled = isset($_GET['keyFiled']) ? $_GET['keyFiled'] : "";
 $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
 $where = '';
 if($keyFiled != ""){
-    $where = ' where '.$keyFiled.' like "%'.$keyWord.'%"';
+    $where = 'AND ' . $keyFiled.' like "%'.$keyWord.'%"';
 }else{
     $where = ' ';
 }
 //echo $where;
-$sql = "SELECT b.*, m.user_name FROM board b
-        inner join members m on b.fk_member_id = m.member_id " . $where;
+$sql = "
+SELECT b.*, m.user_name
+FROM board b
+    inner join members m on b.fk_member_id = m.member_id
+    inner join board_categories bc on bc.fk_board_id = b.board_id
+WHERE 1=1 " . $where . ' GROUP BY b.board_id, m.user_name';
 $orderBy = 'ORDER BY board_id DESC';
 
 list($rows,$cnt,$navi) = PAGE($sql, '' , 10, $orderBy, '');
@@ -42,7 +46,7 @@ $cnt = $cnt - (($p-1) * 10);
 <!--                        <input type="hidden" value="--><?php //=$p?><!--" name="p">-->
                         <div class="d-flex gap-2">
                             <select name="keyFiled" class="form-select form-select-sm w-auto">
-                                <option value="">분류</option>
+<!--                                <option value="">분류</option>-->
                                 <option value="title" <?=$keyFiled == "title"? "selected":""?>>제목</option>
                                 <!--<option value="category" <?=$keyFiled == "category"? "selected":""?>>카테고리</option>-->
                             </select>
@@ -81,7 +85,6 @@ $cnt = $cnt - (($p-1) * 10);
                                         inner join categories on category_id = fk_category_id
                                         WHERE fk_board_id = $board_id ";
                                 $Crow=A($sql, '' , '');
-
 //                                rr($Crow);
                                 $category_names = array_column($Crow, 'category_name');
                                 $category = implode(', ', $category_names);

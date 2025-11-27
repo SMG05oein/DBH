@@ -301,7 +301,7 @@ function mssql_prepare ($query, $phs = array(),$dubug='N') {
 
 //    echo $query;
     foreach ($phs as $ph) {
-//        $ph = "'" . ms_escape_string($ph) . "'";
+        $ph = "'" . ms_escape_string($ph) . "'";
         $query = substr_replace(
             $query, $ph, strpos($query, '?'), 1
         );

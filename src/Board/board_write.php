@@ -24,6 +24,7 @@ if(isLogin() && !$toIndex){
                 WHERE board_id = ? ";
         $bind = array('board_id' => $board_id);
         $Trow=O($sql, $bind , '');
+//        rr($Trow);
 
         $sql = "SELECT * FROM board_categories 
                 inner join categories on category_id = fk_category_id
@@ -31,6 +32,11 @@ if(isLogin() && !$toIndex){
         $bind = array('fk_board_id' => $board_id);
         $Crow=A($sql, $bind , '');
 //        rr($Crow);
+
+        $sql = "SELECT COUNT(*) FROM personnel WHERE fk_activity_id = ?";
+        $bind = array('fk_activity_id'=>$Trow['activity_id']);
+        $count = CNT($sql, $bind);
+
     }
     $category_sql = "SELECT * FROM dbh.categories";
     $category_rows = A($category_sql);
@@ -62,6 +68,8 @@ if(isLogin() && !$toIndex){
 
                 <form action="board_ok.php" method="POST" id="asdf" class="border border-1 p-3 rounded shadow-sm">
                     <input type="hidden" name="checkForm" value="<?=isset($board_row['board_id'])? 2 : 1?>">
+                    <input type="hidden" name="board_id" value="<?=$board_row['board_id']?>">
+                    <input type="hidden" name="activity_id" value="<?=$Trow['activity_id']?>">
                     <div class="mb-3">
                         <label for="postTitle" class="form-label fw-semibold d-flex">
                             <div>제목</div>
@@ -85,7 +93,7 @@ if(isLogin() && !$toIndex){
                                   placeholder="게시글 내용을 입력하세요."
                                   required><?=isset($board_row['content'])?$board_row['content']:''?></textarea>
                     </div>
-
+                    <?php if(!$userEqWriter){?>
                     <div class="mb-3 d-flex gap-2">
                         <label for="category" class="form-label fw-semibold d-flex justify-content-center text-center">카테고리</label>
                         <select class="form-select w-50 d-flex" name="category" id="category">
@@ -96,15 +104,19 @@ if(isLogin() && !$toIndex){
                         </select>
                         <button type="button" id="categoryBtn" class="btn btn-outline-primary">카테고리 등록</button>
                     </div>
+                    <?php }?>
+
                     <div>
                         <label class="form-label fw-semibold d-flex justify-content-center text-center">카테고리 목록</label>
                         <div id="categoryDIV" class="d-flex gap-2">
                             <?php if(isset($Crow)){foreach($Crow as $row):?>
                             <div class="category-item-container d-flex align-items-center gap-2 border rounded p-1 ps-2">
                                 <!--어... name속성 제거-->
-                                <input type='hidden' name='' id="category_id" value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
+                                <input type='hidden' class="category_id" name='' id="category_id" value='<?=isset($row['category_id']) ? $row['category_id'] : ''?>'>
                                 <div class="fw-semibold"><?=isset($row['category_name']) ? $row['category_name'] : ''?></div>
+                                <?php if(!$userEqWriter){?>
                                 <button type="button" class="btn btn-danger btn-sm delete-category-btn">삭제</button>
+                                <?php }?>
                             </div>
                             <?php endforeach;}?>
                         </div>
@@ -144,7 +156,7 @@ if(isLogin() && !$toIndex){
                         </div>
                         <?php if(isset($board_id)){?>
                         <div class="d-flex justify-content-center align-content-center gap-2">
-                            <div>( / )</div>
+                            <div>( <?=$count?> / <?=$Trow['max_personnel']?> )</div>
                             <button type="button" class="btn btn-sm btn-primary">신청</button>
                         </div>
                         <?php }?>
@@ -178,7 +190,7 @@ if(isLogin() && !$toIndex){
         }
         const newCategoryItem =
             `
-            <div class="category-item-container d-flex align-items-center gap-2 border rounded p-1 ps-2">
+            <div class="category-item-container bg-success d-flex align-items-center gap-2 border rounded p-1 ps-2">
                 <input type='hidden' name='category_id[]' id='category_id' value='${categoryId}'>
                 <div class="fw-semibold">${category}</div>
                 <button type="button" class="btn btn-danger btn-sm delete-category-btn">삭제</button>
@@ -192,14 +204,40 @@ if(isLogin() && !$toIndex){
     })
 
     $('#categoryDIV').on('click', '.delete-category-btn', function() {
-        $(this).closest('.category-item-container').remove();
+        const temp =$(this).closest('.category-item-container');
+        const categoryId = temp.find('.category_id').val();
+        if(categoryId === undefined) $(this).closest('.category-item-container').remove();
+        console.log(categoryId);
+        $.ajax({
+            url: './board_ok.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                checkForm: 3,
+                board_id: <?= isset($_GET['board_id'])?$_GET['board_id']:0 ?>,
+                categoryId: categoryId
+            },success: function(response) {
+                if (response && response.result === 'success') {
+                    // alert('도서 항목이 성공적으로 삭제되었습니다.');
+                    $(this).closest('.category-item-container').remove()
+                } else {
+                    // 서버 오류 메시지 출력
+                    alert('삭제 실패: ' + (response ? response.message : '서버 응답 오류'));
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('통신 오류: 서버 연결 실패.');
+                console.error("AJAX Error:", xhr.responseText);
+            }
+        });
     });
 
     $('#submitBtn').on('click', function(e){
         e.preventDefault();
         const categoryCount = $('#categoryDIV').find("input[name='category_id[]']").length;
+        const categoryCount2 = $('#categoryDIV').find("input[id='category_id']").length;
 
-        if (categoryCount === 0) {
+        if (categoryCount === 0 && categoryCount2 === 0) {
             alert("게시글에 최소한 1개 이상의 카테고리를 등록해야 합니다.");
             return; // 제출 중단
         }

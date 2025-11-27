@@ -12,7 +12,7 @@ include("../../inc/head.php");
                 <div class="mb-2" id="alert" style="color: red"></div>
                 <div class="mb-3">
                     <label for="userId" class="form-label">아이디<em style="color: red">*</em>
-<!--                        <button type="button" id="checkId" class="btn btn-dark" style="font-size:0.7rem">아이디 중복 확인</button>-->
+                        <button type="button" id="checkId" class="btn btn-dark" style="font-size:0.7rem">아이디 중복 확인</button>
                     </label>
                     <input type="text"
                            class="form-control"
