@@ -33,10 +33,33 @@ if(isLogin() && !$toIndex){
         $Crow=A($sql, $bind , '');
 //        rr($Crow);
 
-        $sql = "SELECT COUNT(*) FROM personnel WHERE fk_activity_id = ?";
+        // $sql = "SELECT COUNT(*) FROM personnel WHERE fk_activity_id = ?";            //37으로 수정했음
+        $sql = "SELECT * FROM personnel WHERE fk_activity_id = ?";
         $bind = array('fk_activity_id'=>$Trow['activity_id']);
         $count = CNT($sql, $bind);
 
+        /*          begin           */
+        $isApplied = false; // 기본값: 신청 안함
+        $my_member_id = 0;
+        $dbStatus = $Trow['status'];
+
+        if($user_id) { // 로그인이 되어 있다면  
+            // 1. 내 고유 member_id 찾기
+            $sql = "SELECT member_id FROM members WHERE user_id = ?";
+            $bind = array('user_id' => $user_id);
+            $my_member_row = O($sql, $bind);
+
+            if($my_member_row) {
+                $my_member_id = $my_member_row['member_id'];
+
+                // 2. personnel 테이블에서 내가 신청했는지 확인
+                $sql = "SELECT * FROM personnel WHERE fk_activity_id = ? AND fk_member_id = ?";
+                $bind = array('fk_activity_id' => $Trow['activity_id'], 'fk_member_id' => $my_member_id);
+                $apply_cnt = CNT($sql, $bind);
+                if($apply_cnt > 0) $isApplied = true;
+            }
+        }
+        /*           end           */
     }
     $category_sql = "SELECT * FROM dbh.categories";
     $category_rows = A($category_sql);
@@ -154,19 +177,90 @@ if(isLogin() && !$toIndex){
                                        required>
                             </div>
                         </div>
-                        <?php if(isset($board_id)){?>
+
+                        <!-- <?php if(isset($board_id)){?>                                      // 이전코드 주석처리함
                         <div class="d-flex justify-content-center align-content-center gap-2">
                             <div>( <?=$count?> / <?=$Trow['max_personnel']?> )</div>
                             <button type="button" class="btn btn-sm btn-primary">신청</button>
                         </div>
+                        <?php }?> -->
+
+                        <!--                begin                   -->
+
+                        <?php if(isset($board_id)){?>
+                        <div class="d-flex justify-content-center align-items-center gap-3 mt-3 p-3 border rounded bg-light">
+                            <div class="fw-bold fs-5">
+                                참여 현황 : <span id="currentCount"><?=$count?></span> / <?=$Trow['max_personnel']?>
+                            </div>
+
+                            <?php
+                            // 1. 로그인을 안 했을 때
+                            if(!$user_id) { 
+                            ?>
+                                <span class="text-danger small ms-2 fw-bold">* 로그인 후 신청 가능합니다.</span>
+                            
+                            <?php 
+                            // 2. 작성자 본인일 때 
+                            } else if(!$userEqWriter) { 
+                                if($dbStatus == 3 || $dbStatus == '취소') {
+                            ?>
+                                    <span class="badge bg-danger p-2">취소된 활동입니다</span>
+                                <?php 
+                                } else { 
+                                // 아직 취소 안 했으면 [활동 취소] 버튼 표시 (누르면 status -> 3)
+                                ?>
+                                    <button type="button" id="statusCancelBtn"
+                                    class="btn btn-warning btn-sm"
+                                    data-activity-id="<?=$Trow['activity_id']?>">
+                                    활동 취소
+                                    </button>
+                            <?php 
+                                }    
+                            // 3. 이미 신청한 사람일 때 (취소 버튼)
+                            } else if($isApplied) { 
+                            ?>
+                                <button type="button" id="applyBtn"
+                                        class="btn btn-danger btn-sm"
+                                        data-activity-id="<?=$Trow['activity_id']?>"
+                                        data-status="cancel">
+                                    신청 취소
+                                </button>
+                            
+                            <?php 
+                            // 4. 그 외 (신청 가능)
+                            } else { 
+                            ?>
+                                <button type="button" id="applyBtn"
+                                        class="btn btn-primary btn-sm"
+                                        data-activity-id="<?=$Trow['activity_id']?>"
+                                        data-status="apply">
+                                    참여 신청
+                                </button>
+                            <?php } ?>
+                            </div>
                         <?php }?>
+                        <!--                end                  -->
+                    
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 mt-4">
-                        <a onclick="location.href='<?=$LOCATIONINDEX?>'" class="btn btn-secondary">취소</a>
-                        <?php if(!$userEqWriter){?>
+                        <a onclick="location.href='<?=$LOCATIONINDEX?>'" class="btn btn-secondary">나가기</a>
+                        
+                        <!-- 이전 코드 주석처리  -->
+                        <!-- <?php if(!$userEqWriter){?>
                         <button type="submit" class="btn btn-primary" id="submitBtn"><?=isset($board_id)? "수정" : "등록"?></button>
-                        <?php }?>
+                        <?php }?> -->
+                        
+                        <!-- begin  -->
+                        <?php if(!$userEqWriter){ ?>
+                            <?php if(isset($board_id)){ ?>
+                                <button type="button" class="btn btn-danger" id="deleteBtn">삭제</button>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">수정</button>
+                            <?php } else if(!isset($board_id)) { ?>
+                                <button type="submit" class="btn btn-primary" id="submitBtn">등록</button>
+                            <?php }
+                        } ?>
+                        <!-- end -->
                     </div>
 
                 </form>
@@ -243,6 +337,94 @@ if(isLogin() && !$toIndex){
         }
         $('#asdf').submit();
     })
+
+    /*             begin               */
+    // 활동 신청/취소 버튼 클릭 이벤트
+    $('#applyBtn').on('click', function() {
+        const btn = $(this);
+        const activityId = btn.data('activity-id');
+        const currentStatus = btn.data('status'); // 'apply' 또는 'cancel'
+        const actionType = (currentStatus === 'apply') ? 'register' : 'cancel';
+
+        if(!confirm(actionType === 'register' ? '활동에 참여하시겠습니까?' : '참여를 취소하시겠습니까?')){
+            return;
+        }
+
+        $.ajax({
+            url: './board_ok.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                checkForm: 'activity_application', // board_ok.php에서 처리할 구분자
+                activity_id: activityId,
+                action_type: actionType // 신청인지 취소인지 구분
+            },
+            success: function(res) {
+                if (res.result === 'success') {
+                    alert(res.message);
+                    location.reload(); // 화면 새로고침하여 버튼 상태 및 인원수 갱신
+                } else {
+                    alert('처리 실패: ' + res.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('통신 오류 발생');
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    $('#deleteBtn').on('click', function() {
+        if(confirm('정말 이 게시글을 삭제하시겠습니까?\n연결된 활동 및 참여 정보가 모두 삭제됩니다.')) {
+            
+            const form = $('#asdf'); // 폼 ID 확인
+
+            // 1. 기존 checkForm 값 제거 (혹시 몰라서)
+            form.find('input[name="checkForm"]').remove();
+
+            // 2. 삭제용 checkForm 값(4)을 가진 hidden input 생성 및 추가
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'checkForm',
+                value: '4'
+            }).appendTo(form);
+
+            // 3. 폼 제출 (board_ok.php로 이동)
+            form.submit();
+        }
+    });
+
+    //작성자의 활동 취소(status=='취소') 버튼 클릭
+    $('#statusCancelBtn').on('click', function() {
+        if(!confirm('정말 이 활동을 취소하시겠습니까?\n상태가 [취소]로 변경되며 더 이상 신청을 받을 수 없습니다.')){
+            return;
+        }
+
+        const activityId = $(this).data('activity-id');
+
+        $.ajax({
+            url: './board_ok.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                checkForm: 'activity_application',
+                activity_id: activityId,
+                action_type: 'activity_cancel' // ★ 여기를 status_cancel -> activity_cancel로 변경!
+            },
+            success: function(res) {
+                if (res.result === 'success') {
+                    alert(res.message);
+                    location.reload();
+                } else {
+                    alert('처리 실패: ' + res.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('통신 오류 발생');
+            }
+        });
+    });
+    /*            end               */
 </script>
 <?php
 include("../../inc/footer.php");

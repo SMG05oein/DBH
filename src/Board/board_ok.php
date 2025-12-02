@@ -157,4 +157,129 @@ if($checkForm == '1'){ //게시글 등록
     exit;
 }
 
+/*       begin         */
+else if($checkForm == 'activity_application') { // 활동 신청 및 취소 로직
+
+    header('Content-Type: application/json');
+
+    // 로그인 유저 확인
+    $user_id = isset($_COOKIE["user_id"]) ? $_COOKIE["user_id"] : '';
+    if(!$user_id) {
+        echo json_encode(['result'=>'fail', 'message'=>'로그인이 필요합니다.']);
+        exit;
+    }
+
+    // user_id로 member_id(PK) 찾기
+    $sql = "SELECT member_id FROM members WHERE user_id = '$user_id'";
+    $row = O($sql);
+    if(!$row) {
+        echo json_encode(['result'=>'fail', 'message'=>'회원 정보를 찾을 수 없습니다.']);
+        exit;
+    }
+    $member_id = $row['member_id'];
+
+    // 데이터 받기
+    $activity_id = $_POST['activity_id'];
+    $action_type = $_POST['action_type'];
+
+    // 활동 정보 조회 (상태 검증용)
+    // status+0 as status : ENUM을 숫자로 가져오기 (1:모집중, 2:마감, 3:취소, 4:기간만료)
+    $sql = "SELECT max_personnel, status+0 as status, end_date FROM $activity_table WHERE activity_id = '$activity_id'";
+    $act_row = O($sql);
+
+
+    if($action_type == 'register') {
+        // A. 날짜 마감(기간만료) 체크 (DB 조작 포함)
+        $today = date("Y-m-d"); 
+        if($act_row['end_date'] < $today) {
+            // 날짜가 지났는데 DB 상태가 아직 '기간만료(4)'가 아니라면 업데이트
+            if($act_row['status'] != 4) {
+                $update_data = array('status' => 4); 
+                $update_where = array('activity_id' => $activity_id);
+                UPDATE($activity_table, $update_data, $update_where, '');
+            }
+            echo json_encode(['result'=>'fail', 'message'=>'신청 기간이 지난 활동입니다.']);
+            exit;
+        }
+
+        // B. 모집 상태(status) 체크 (1:모집중이 아니면 거절)
+        if($act_row['status'] != 1) { 
+             $msg = '신청할 수 없는 상태입니다.';
+             if($act_row['status'] == 2) $msg = '이미 마감된 활동입니다.';
+             if($act_row['status'] == 3) $msg = '취소된 활동입니다.';
+             if($act_row['status'] == 4) $msg = '신청 기간이 지난 활동입니다.'; 
+
+             echo json_encode(['result'=>'fail', 'message'=>$msg]);
+             exit;
+        }
+
+        // C. 현재 인원 및 중복 신청 확인
+        $sql = "SELECT * FROM $personnel_table WHERE fk_activity_id = '$activity_id'";
+        $current_cnt = CNT($sql);
+
+        // 정원 초과 확인
+        if($current_cnt >= $act_row['max_personnel']) {
+            echo json_encode(['result'=>'fail', 'message'=>'정원이 초과되었습니다.']);
+            exit;
+        }
+
+        // 중복 신청 확인
+        $sql = "SELECT * FROM $personnel_table WHERE fk_activity_id = '$activity_id' AND fk_member_id = '$member_id'";
+        $dup_cnt = CNT($sql);
+        if($dup_cnt > 0) {
+            echo json_encode(['result'=>'fail', 'message'=>'이미 신청하셨습니다.']);
+            exit;
+        }
+
+        // D. [최종] INSERT 실행
+        $data = array(
+            'fk_activity_id' => $activity_id,
+            'fk_member_id' => $member_id,
+            'join_date' => 'NOW()'
+        );
+        INSERT($personnel_table, $data, '');
+        
+        // E. 자동 마감 처리 (신청 후 인원이 꽉 찼다면 상태를 2:마감 으로 변경)
+        if($current_cnt + 1 >= $act_row['max_personnel']) {
+            $update_data = array('status' => 2); // 2: 마감
+            $update_where = array('activity_id' => $activity_id);
+            UPDATE($activity_table, $update_data, $update_where, '');
+        }
+
+        echo json_encode(['result'=>'success', 'message'=>'참여 신청이 완료되었습니다.']);
+
+    } else if ($action_type == 'cancel') {
+
+        $where = array(
+            'fk_activity_id' => $activity_id,
+            'fk_member_id' => $member_id
+        );
+        DEL($personnel_table, $where, '');
+        
+        // 취소로 인해 자리가 비게 되었을 때 처리
+        // 만약 현재 상태가 '마감(2)'이었다면 -> 다시 '모집중(1)'으로 변경
+        // (단, 기간만료(4)나 취소(3) 상태라면 건드리지 않음)
+        if($act_row['status'] == 2) {
+            $update_data = array('status' => 1); // 1: 모집중
+            $update_where = array('activity_id' => $activity_id);
+            UPDATE($activity_table, $update_data, $update_where, '');
+        }
+
+        echo json_encode(['result'=>'success', 'message'=>'참여가 취소되었습니다.']);
+    } else if ($action_type == 'activity_cancel') { 
+        /** 작성자의 활동 취소 로직(Status -> 3) */
+
+        // 상태를 3(취소)으로 변경
+        $update_data = array('status' => 3); 
+        $update_where = array('activity_id' => $activity_id);
+        UPDATE($activity_table, $update_data, $update_where, '');
+
+        echo json_encode(['result'=>'success', 'message'=>'활동이 취소 처리되었습니다.']);
+    }
+
+    exit;
+}
+/*         end           */
+
+
 ?>
