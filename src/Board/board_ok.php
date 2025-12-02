@@ -275,7 +275,7 @@ else if($checkForm == 'activity_application') { // 활동 신청 및 취소 로�
         UPDATE($activity_table, $update_data, $update_where, '');
 
         echo json_encode(['result'=>'success', 'message'=>'활동이 취소 처리되었습니다.']);
-    }
+    }  
 
     exit;
 }

@@ -409,7 +409,7 @@ if(isLogin() && !$toIndex){
             data: {
                 checkForm: 'activity_application',
                 activity_id: activityId,
-                action_type: 'activity_cancel' // ★ 여기를 status_cancel -> activity_cancel로 변경!
+                action_type: 'activity_cancel' 
             },
             success: function(res) {
                 if (res.result === 'success') {
