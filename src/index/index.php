@@ -16,20 +16,33 @@ if($keyFiled != ""){
     $where = ' ';
 }
 //echo $where;
-$sql = "
-SELECT b.*, m.user_name
-FROM board b
-    inner join members m on b.fk_member_id = m.member_id
-    inner join board_categories bc on bc.fk_board_id = b.board_id
-WHERE 1=1 " . $where . ' GROUP BY b.board_id, m.user_name';
-$orderBy = 'ORDER BY board_id DESC';
+$baseWhere = ' 1=1';
+$cr = isset($_GET['cr']) ? $_GET['cr'] : false;
+if($cr){
+    $baseWhere .= " AND bc.fk_category_id = $cr ";
+    $sql = "
+    SELECT b.*, m.user_name, c.*
+    FROM board b
+        inner join members m on b.fk_member_id = m.member_id
+        inner join board_categories bc on bc.fk_board_id = b.board_id
+        INNER JOIN categories c ON bc.fk_category_id = c.category_id
+	WHERE". $baseWhere . $where . ' GROUP BY b.board_id, m.user_name';
+    $orderBy = 'ORDER BY board_id DESC';
+}else{
+    $sql = "
+    SELECT b.*, m.user_name
+    FROM board b
+        inner join members m on b.fk_member_id = m.member_id
+        inner join board_categories bc on bc.fk_board_id = b.board_id
+        WHERE". $baseWhere . $where . ' GROUP BY b.board_id, m.user_name';
+    $orderBy = 'ORDER BY board_id DESC';
+}
 
 list($rows,$cnt,$navi) = PAGE($sql, '' , 10, $orderBy, '');
 //rr($rows);
 //rr($cnt);
 
 $cnt = $cnt - (($p-1) * 10);
-
 //echo $navi;
 ?>
 
@@ -79,7 +92,13 @@ $cnt = $cnt - (($p-1) * 10);
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($rows as $row):
+
+                            <?php
+                            if(empty($rows[0])){
+                            ?>
+                            <?php
+                            }else{
+                            foreach ($rows as $row):
                                 $board_id = $row['board_id'];
                                 $sql = "SELECT * FROM board_categories 
                                         inner join categories on category_id = fk_category_id
@@ -100,7 +119,7 @@ $cnt = $cnt - (($p-1) * 10);
                                     <td class="text-center"><?=substr($row['reg_date'],0,10)?></td>
                                     <td class="text-center"><?=$row['hits']?:0?></td>
                                 </tr>
-                            <?php $cnt--; endforeach;?>
+                            <?php $cnt--; endforeach;}?>
                             </tbody>
                         </table>
                     </div>
