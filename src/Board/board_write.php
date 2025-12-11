@@ -22,17 +22,10 @@ if(isLogin() && !$toIndex){
         $sql = "SELECT b.*, a.*, IF(a.end_date < CURRENT_DATE(), 0, 1) as tempVal 
                 FROM board b
                 inner join activity a on a.activity_id = b.fk_activity_id
-                WHERE b.board_id = ?";
+                WHERE b.board_id = ? ";
         $bind = array('board_id' => $board_id);
-        $Trow=O($sql, $bind, '');
+        $Trow=O($sql, $bind);
 //        rr($Trow);
-
-        $board_id_SQL = "SELECT fk_activity_id, title 
-                         FROM board
-                         WHERE fk_activity_id = ? AND (isDiffSelect IS NULL OR isDiffSelect != 1)";
-        $bind = array('fk_activity_id' => $Trow['fk_activity_id']);
-        $board_id_ROW=A($board_id_SQL, $bind, '');
-//        rr($board_id_ROW);
 
         $sql = "SELECT * FROM board_categories 
                 inner join categories on category_id = fk_category_id
@@ -72,20 +65,6 @@ if(isLogin() && !$toIndex){
     $category_sql = "SELECT * FROM dbh.categories";
     $category_rows = A($category_sql);
     $userEqWriter = '';
-
-    $activitySql =
-    "
-    SELECT b.title, b.board_id, b.fk_activity_id, b.isDiffSelect
-        FROM board b
-        INNER JOIN activity a on b.fk_activity_id = a.activity_id
-        INNER JOIN members m on m.member_id = b.fk_member_id
-    WHERE m.user_id = ? AND (b.isDiffSelect != 1 OR b.isDiffSelect IS NULL)
-    ";
-
-    $bind = array('user_id' => $user_id);
-    $activity_rows = A($activitySql, $bind, '');
-//    rr($activity_rows);
-
     if(!isset($_GET['board_id'])) {
 //        echo 'sss';
         $userEqWriter = 0;
@@ -169,20 +148,7 @@ if(isLogin() && !$toIndex){
 
                     <div class="mb-3 mt-2 border-1 border-top ">
                         <label for="postContent" class="mt-1 form-label fw-semibold d-flex justify-content-center text-center">활동등록</label>
-                        <?php
-                        $tempVal = $board_id_ROW[0]['fk_activity_id'] ?? false;
-                        if(!$userEqWriter){?>
-                        <select id="MySelect" name="MySelect" class="form-select form-select-sm">
-                            <option value="">새 활동</option>
-                            <?php foreach($activity_rows as $tempRow):?>
-                            <option value="<?= $tempRow['fk_activity_id']?>" <?=($tempRow['isDiffSelect'] != 1)&&($tempRow['fk_activity_id']==$tempVal)? 'selected' : '' ?> >
-                                <?= $tempRow['title']?>
-                            </option>
-                            <?php endforeach;?>
-                        </select>
-                        <?php }?>
-                        <div class="row pt-2">
-                            <div class="col-md-4 mb-3">
+                        <div class="row pt-2"> <div class="col-md-4 mb-3">
                                 <label for="startDate" class="form-label">시작일</label>
                                 <input type="date" <?=$userEqWriter? $disabled: ''?>
                                        class="form-control"
@@ -227,6 +193,12 @@ if(isLogin() && !$toIndex){
                             <div class="fw-bold fs-5">
                                 참여 현황 : <span id="currentCount"><?=$count?></span> / <?=$Trow['max_personnel']?>
                             </div>
+                            
+                            <a href="participants.php?activity_id=<?= $Trow['activity_id'] ?>&board_id=<?= $board_id ?>"
+                            class="btn btn-info btn-sm">
+                            참여자 명단 보기
+                            </a>
+
 
                             <?php
                             // 1. 로그인을 안 했을 때
@@ -283,9 +255,9 @@ if(isLogin() && !$toIndex){
                         <a onclick="location.href='<?=$LOCATIONINDEX?>'" class="btn btn-secondary">나가기</a>
                         
                         <!-- 이전 코드 주석처리  -->
-                        <!-- <?php if(!$userEqWriter){?>
-                        <button type="submit" class="btn btn-primary" id="submitBtn"><?=isset($board_id)? "수정" : "등록"?></button>
-                        <?php }?> -->
+                        <!-- <//?php if(!$userEqWriter){?>
+                        <button type="submit" class="btn btn-primary" id="submitBtn"><//?=isset($board_id)? "수정" : "등록"?></button>
+                        <//?php }?> -->
                         
                         <!-- begin  -->
                         <?php if(!$userEqWriter){ ?>
@@ -411,7 +383,7 @@ if(isLogin() && !$toIndex){
     });
 
     $('#deleteBtn').on('click', function() {
-        if(confirm('정말 이 게시글을 삭제하시겠습니까?\n연결된 활동 및 참여 정보가 모두 삭제됩니다.')) {
+        if(confirm('정말 이 게시글을 `삭제하시겠습니까?\n연결된 활동 및 참여 정보가 모두 삭제됩니다.')) {
             
             const form = $('#asdf'); // 폼 ID 확인
 
@@ -430,7 +402,7 @@ if(isLogin() && !$toIndex){
         }
     });
 
-    //작성자의 활동 취소(status=='취소') 버튼 클릭
+    //작성자의 활동 취소(status=='취소') 버튼 클릭 
     $('#statusCancelBtn').on('click', function() {
         if(!confirm('정말 이 활동을 취소하시겠습니까?\n상태가 [취소]로 변경되며 더 이상 신청을 받을 수 없습니다.')){
             return;
@@ -461,39 +433,6 @@ if(isLogin() && !$toIndex){
         });
     });
     /*            end               */
-</script>
-
-<script>
-    function resetMySelect(){
-        $('#MySelect').val('');
-    }
-
-    $('#MySelect').on('change', function(e){
-        console.log(e.target.value);
-        if(e.target.value == ''){
-            $('#startDate').prop('disabled', false);
-            $('#endDate').prop('disabled', false);
-            $('#memberCount').prop('disabled', false);
-        }else if(e.target.value == <?=$tempVal?>){
-            $('#startDate').prop('disabled', false);
-            $('#endDate').prop('disabled', false);
-            $('#memberCount').prop('disabled', false);
-        }else {
-            $('#startDate').prop('disabled', true);
-            $('#endDate').prop('disabled', true);
-            $('#memberCount').prop('disabled', true);
-        }
-    })
-
-    // $('#startDate').on('change', function(e) {
-    //     resetMySelect();
-    // })
-    // $('#endDate').on('change', function(e) {
-    //     resetMySelect();
-    // })
-    // $('#memberCount').on('change', function(e) {
-    //     resetMySelect();
-    // })
 </script>
 <?php
 include("../../inc/footer.php");
