@@ -10,9 +10,9 @@
  * */
 
 $DBCONF = array();
-$DBCONF['host'] = "127.0.0.1:3307";
+$DBCONF['host'] = "localhost";
 $DBCONF['user'] = "root";
-$DBCONF['pass'] = "1234";
+$DBCONF['pass'] = "SMG05!eoin";
 $DBCONF['dbname'] = "dbh";
 
 $mysqli = new mysqli($DBCONF['host'], $DBCONF['user'],$DBCONF['pass'],$DBCONF['dbname']);

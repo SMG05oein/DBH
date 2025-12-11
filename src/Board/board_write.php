@@ -19,11 +19,12 @@ if(isLogin() && !$toIndex){
         $hits = $board_row['hits'] + 1; //트리거 만들어서 해도 될 듯?
         UPDATE('board', array('hits' => $hits), array('board_id' => $board_id));
 
-        $sql = "SELECT * FROM board
-                inner join activity on activity_id = fk_activity_id
-                WHERE board_id = ? ";
+        $sql = "SELECT b.*, a.*, IF(a.end_date < CURRENT_DATE(), 0, 1) as tempVal 
+                FROM board b
+                inner join activity a on a.activity_id = b.fk_activity_id
+                WHERE b.board_id = ? ";
         $bind = array('board_id' => $board_id);
-        $Trow=O($sql, $bind , '');
+        $Trow=O($sql, $bind);
 //        rr($Trow);
 
         $sql = "SELECT * FROM board_categories 
@@ -199,9 +200,10 @@ if(isLogin() && !$toIndex){
                             ?>
                                 <span class="text-danger small ms-2 fw-bold">* 로그인 후 신청 가능합니다.</span>
                             
-                            <?php 
+                            <?php
                             // 2. 작성자 본인일 때 
-                            } else if(!$userEqWriter) { 
+                            } else if(!$Trow['tempVal']){echo '';}
+                            else if(!$userEqWriter) {
                                 if($dbStatus == 3 || $dbStatus == '취소') {
                             ?>
                                     <span class="badge bg-danger p-2">취소된 활동입니다</span>
