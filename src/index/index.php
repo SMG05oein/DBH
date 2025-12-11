@@ -18,8 +18,9 @@ if($keyFiled != ""){
 //echo $where;
 $baseWhere = ' 1=1';
 $cr = isset($_GET['cr']) ? $_GET['cr'] : false;
+$bind = array();
 if($cr){
-    $baseWhere .= " AND bc.fk_category_id = $cr ";
+    $baseWhere .= " AND bc.fk_category_id = ? ";
     $sql = "
     SELECT b.*, m.user_name, c.*
     FROM board b
@@ -28,6 +29,7 @@ if($cr){
         INNER JOIN categories c ON bc.fk_category_id = c.category_id
 	WHERE". $baseWhere . $where . ' GROUP BY b.board_id, m.user_name';
     $orderBy = 'ORDER BY board_id DESC';
+    $bind = array('fk_category_id' => $cr);
 }else{
     $sql = "
     SELECT b.*, m.user_name
@@ -38,7 +40,7 @@ if($cr){
     $orderBy = 'ORDER BY board_id DESC';
 }
 
-list($rows,$cnt,$navi) = PAGE($sql, '' , 10, $orderBy, '');
+list($rows,$cnt,$navi) = PAGE($sql, $bind, 10, $orderBy, '');
 //rr($rows);
 //rr($cnt);
 

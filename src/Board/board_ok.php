@@ -24,6 +24,7 @@ if($checkForm == '1'){ //게시글 등록
     /** Begin 1,2 */
     $title = $_POST['title'];
     $content = $_POST['content'];
+    $MySelect = $_POST['MySelect'];
 
     $sql = "SELECT * FROM members WHERE user_id = '$user_id' ";
     $row = O($sql);
@@ -59,90 +60,161 @@ if($checkForm == '1'){ //게시글 등록
     /** End 4 */
 
     /** Begin 5 */
-    $start_date = $_POST['start_date'];
-    $end_date = $_POST['end_date'];
-    $member_count = $_POST['member_count'];
+    if($MySelect != ''){
+        $activity_id = $MySelect;
+        $temp_data = array(
+            'fk_activity_id' => $MySelect,
+            'isDiffSelect' => 1
+        );
+        $temp_where = array(
+            'board_id' => $board_id,
+        );
+        UPDATE($board_table, $temp_data, $temp_where, '');
+    }else{
+        $start_date = $_POST['start_date'];
+        $end_date = $_POST['end_date'];
+        $member_count = $_POST['member_count'];
+        if($start_date == '' || $end_date == '' || $member_count == ''){
+            echo"
+            <script>
+            alert('새 활동을 선택하셨으나 활동에 필요한 필수 데이터가 누락되었습니다.');
+            history.back();
+            </script>
+            ";
+            DEL($board_table, array('board_id' => $board_id));
+        }else{
+            $activity_data = array(
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'max_personnel' => $member_count,
+                'status' => 1,
+            );
+            INSERT($activity_table, $activity_data, '');
+            /** End 5 */
 
-    $activity_data = array(
-        'start_date' => $start_date,
-        'end_date' => $end_date,
-        'max_personnel' => $member_count,
-        'status' => 1,
-    );
-    INSERT($activity_table, $activity_data, '');
-    /** End 5 */
+            /** Begin 6 */
+            $sql = "SELECT * FROM $activity_table ORDER BY activity_id DESC";
+            $row = O($sql);
+            $activity_id = $row['activity_id'];
+            $temp_data = array(
+                'fk_activity_id' => $activity_id,
+            );
+            $temp_where = array(
+                'board_id' => $board_id,
+            );
+            UPDATE($board_table, $temp_data, $temp_where, '');
+            /** End 6 */
 
-    /** Begin 6 */
-    $sql = "SELECT * FROM $activity_table ORDER BY activity_id DESC";
-    $row = O($sql);
-    $activity_id = $row['activity_id'];
-    $temp_data = array(
-        'fk_activity_id' => $activity_id,
-    );
-    $temp_where = array(
-        'board_id' => $board_id,
-    );
-    UPDATE($board_table, $temp_data, $temp_where, '');
-    /** End 6 */
-
-    /** Begin 7 */
-    $personnel_data = array(
-        'fk_activity_id' => $activity_id,
-        'fk_member_id' => $member_id,
-    );
-    INSERT($personnel_table, $personnel_data, '');
-    /** End 7 */
+            /** Begin 7 */
+            $personnel_data = array(
+                'fk_activity_id' => $activity_id,
+                'fk_member_id' => $member_id,
+            );
+            INSERT($personnel_table, $personnel_data, '');
+            /** End 7 */
+        }
+    }
 
 
     echo "<script>location.href='/DBH/src/Board/board_write.php?board_id=$board_id'</script>";
-}else if($checkForm == 2){ //게시글 수정
+}else if($checkForm == 2){ // 게시글 수정
+    $MySelect = $_POST['MySelect'];
+
+    // $sql = "SELECT * FROM $board_table WHERE fk_activity_id = '$MySelect' ";
+    // $row = CNT($sql);
+    // rr($row);
+    // exit; //
+
+    $sql = "SELECT * FROM members WHERE user_id = '$user_id' ";
+    $row = O($sql);
+    $member_id = $row['member_id'];
+
     $title = $_POST['title'];
     $content = $_POST['content'];
-    $category_id = isset($_POST['category_id']) ? $_POST['category_id'] : array();
+    $category_id = $_POST['category_id'] ?? array();
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
     $member_count = $_POST['member_count'];
     $board_id = $_POST['board_id'];
     $activity_id = $_POST['activity_id'];
+
 //    rr($_POST);
 //    exit;
+
     /** start 제목, 내용 수정 board */
-    $temp_data = array(
-        'title' => $title,
-        'content' => $content,
-    );
-    $temp_where = array(
-        'board_id' => $board_id,
-    );
-    UPDATE($board_table, $temp_data, $temp_where, '');
-    /** end 제목, 내용 수정 board */
-
-    /** start 카테고리 수정(근데 입력이긴 함) categories */
-    foreach ($category_id as $r) {
-        $data = array(
-            'fk_board_id' => $board_id,
-            'fk_category_id' => $r,
+    if($MySelect != ''){
+        $temp_data = array(
+            'title' => $title,
+            'content' => $content,
+            'fk_activity_id' => $MySelect,
+            'isDiffSelect' => ($MySelect == $activity_id) ? 2 : 1
         );
-        INSERT($board_category_table, $data, '');
+        $temp_where = array(
+            'board_id' => $board_id,
+        );
+        UPDATE($board_table, $temp_data, $temp_where, '');
+        /** end 제목, 내용 수정 board */
+
+        /** start 카테고리 수정 categories */
+
+        foreach ($category_id as $r) {
+            $data = array(
+                'fk_board_id' => $board_id,
+                'fk_category_id' => $r,
+            );
+            INSERT($board_category_table, $data, '');
+        }
+        /** end 카테고리 수정 categories */
+        if ($MySelect == $activity_id) {
+        /** start 활동 수정 activity */
+            $activity_data = array(
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'max_personnel' => $member_count,
+                'status' => 1,
+            );
+            $activity_where = array(
+                'activity_id' => $MySelect,
+            );
+            UPDATE($activity_table, $activity_data, $activity_where, '');
+        }
+        /** end 활동 수정 activity */
+    }else{
+        $activity_data = array(
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'max_personnel' => $member_count,
+            'status' => 1,
+        );
+        INSERT($activity_table, $activity_data, '');
+        /** End 5 */
+
+        /** Begin 6 */
+        $sql = "SELECT * FROM $activity_table ORDER BY activity_id DESC";
+        $row = O($sql);
+        $activity_id = $row['activity_id'];
+        $temp_data = array(
+            'fk_activity_id' => $activity_id,
+            'isDiffSelect' => 2
+        );
+        $temp_where = array(
+            'board_id' => $board_id,
+        );
+        UPDATE($board_table, $temp_data, $temp_where, '');
+        /** End 6 */
+
+        /** Begin 7 */
+        $personnel_data = array(
+            'fk_activity_id' => $activity_id,
+            'fk_member_id' => $member_id,
+        );
+        INSERT($personnel_table, $personnel_data, '');
+        /** End 7 */
     }
-    /** end 카테고리 수정 categories */
 
-    /** start 활동 수정 activity */
-    $activity_data = array(
-        'start_date' => $start_date,
-        'end_date' => $end_date,
-        'max_personnel' => $member_count,
-        'status' => 1,
-    );
-    $activity_where = array(
-        'activity_id' => $activity_id,
-    );
-    UPDATE($activity_table, $activity_data, $activity_where, '');
-    /** end 활동 수정 activity */
-
-
-    echo "<script>location.href='/DBH/src/Board/board_write.php?board_id=$board_id'</script>";
-
+//    exit;
+    // 성공 메시지 후 리다이렉트
+    echo "<script>alert('게시글이 성공적으로 수정되었습니다.'); location.href='/DBH/src/Board/board_write.php?board_id=$board_id'</script>";
 }else if($checkForm == 3){ //카테고리 삭제
     header('Content-Type: application/json');
     $board_id = $_POST['board_id'];
@@ -155,6 +227,14 @@ if($checkForm == '1'){ //게시글 등록
     $r = ['result'=>'success'];
     echo json_encode($r);
     exit;
+}else if($checkForm == 4){ //게시글 삭제
+    $board_id = $_POST['board_id'];
+    $where = array(
+        'board_id'=>$board_id,
+    );
+    DEL($board_table, $where, '');
+    echo "<script>location.href='$LOCATIONINDEX'</script>";
+
 }
 
 /*       begin         */
