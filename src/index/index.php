@@ -11,7 +11,7 @@ $keyFiled = isset($_GET['keyFiled']) ? $_GET['keyFiled'] : "";
 $keyWord = isset($_GET['keyWord']) ? $_GET['keyWord'] : "";
 $where = '';
 if($keyFiled != ""){
-    $where = 'AND ' . $keyFiled.' like "%'.$keyWord.'%"';
+    $where = ' AND ' . $keyFiled.' like "%'.$keyWord.'%"';
 }else{
     $where = ' ';
 }
