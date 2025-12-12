@@ -119,7 +119,9 @@ if($checkForm == '1'){ //게시글 등록
     echo "<script>location.href='/DBH/src/Board/board_write.php?board_id=$board_id'</script>";
 }else if($checkForm == 2){ // 게시글 수정
     $MySelect = $_POST['MySelect'];
-
+    $MySelect = explode(',', $MySelect);
+//    rr($MySelect, $_POST['board_id'], $_POST['activity_id']);
+//    exit;
     // $sql = "SELECT * FROM $board_table WHERE fk_activity_id = '$MySelect' ";
     // $row = CNT($sql);
     // rr($row);
@@ -142,12 +144,12 @@ if($checkForm == '1'){ //게시글 등록
 //    exit;
 
     /** start 제목, 내용 수정 board */
-    if($MySelect != ''){
+    if($MySelect[0] != ''){
         $temp_data = array(
             'title' => $title,
             'content' => $content,
-            'fk_activity_id' => $MySelect,
-            'isDiffSelect' => ($MySelect == $activity_id) ? 2 : 1
+            'fk_activity_id' => $MySelect[0],
+            'isDiffSelect' => ($MySelect[0] == $activity_id && $MySelect[1] == $board_id) ? 2 : 1
         );
         $temp_where = array(
             'board_id' => $board_id,
@@ -165,7 +167,7 @@ if($checkForm == '1'){ //게시글 등록
             INSERT($board_category_table, $data, '');
         }
         /** end 카테고리 수정 categories */
-        if ($MySelect == $activity_id) {
+        if ($MySelect[0] == $activity_id) {
         /** start 활동 수정 activity */
             $activity_data = array(
                 'start_date' => $start_date,
@@ -174,7 +176,7 @@ if($checkForm == '1'){ //게시글 등록
                 'status' => 1,
             );
             $activity_where = array(
-                'activity_id' => $MySelect,
+                'activity_id' => $MySelect[0],
             );
             UPDATE($activity_table, $activity_data, $activity_where, '');
         }
