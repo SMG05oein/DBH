@@ -15,6 +15,7 @@ $row = O($sql);
     <div class="d-flex align-items-center gap-2">
         <a href="../index/index.php">모두</a>
         <a href="../index/index.php?cr=1">스포츠</a>
+        <a href="../index/index.php?cr=2">공부</a>
         <a href="../index/index.php?cr=3">식사</a>
         <a href="../index/index.php?cr=4">택시</a>
         <a href="../index/index.php?cr=5">아웃팅</a>
