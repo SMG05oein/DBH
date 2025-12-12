@@ -25,6 +25,7 @@ if($checkForm == '1'){ //게시글 등록
     $title = $_POST['title'];
     $content = $_POST['content'];
     $MySelect = $_POST['MySelect'];
+    $MySelect = explode(',', $MySelect);
 
     $sql = "SELECT * FROM members WHERE user_id = '$user_id' ";
     $row = O($sql);
@@ -61,9 +62,9 @@ if($checkForm == '1'){ //게시글 등록
 
     /** Begin 5 */
     if($MySelect != ''){
-        $activity_id = $MySelect;
+        $activity_id = $MySelect[0];
         $temp_data = array(
-            'fk_activity_id' => $MySelect,
+            'fk_activity_id' => $MySelect[0],
             'isDiffSelect' => 1
         );
         $temp_where = array(
