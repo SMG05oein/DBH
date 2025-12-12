@@ -61,7 +61,7 @@ if($checkForm == '1'){ //게시글 등록
     /** End 4 */
 
     /** Begin 5 */
-    if($MySelect != ''){
+    if($MySelect[0] != ''){
         $activity_id = $MySelect[0];
         $temp_data = array(
             'fk_activity_id' => $MySelect[0],
