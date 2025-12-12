@@ -297,7 +297,9 @@ if(isLogin() && !$toIndex){
                         <?php if(!$userEqWriter){ ?>
                             <?php if(isset($board_id)){ ?>
                                 <button type="button" class="btn btn-danger" id="deleteBtn">삭제</button>
+                                <?php if($Trow['status'] != '취소') {?>
                                 <button type="submit" class="btn btn-primary" id="submitBtn">수정</button>
+                                <?php }?>
                             <?php } else if(!isset($board_id)) { ?>
                                 <button type="submit" class="btn btn-primary" id="submitBtn">등록</button>
                             <?php }
