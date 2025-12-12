@@ -384,13 +384,13 @@ if(isLogin() && !$toIndex){
             alert("게시글에 최소한 1개 이상의 카테고리를 등록해야 합니다.");
             return;
         }
-        const selectedActiv = $('#MySelect').val();
+        const selectedActivity = $('#MySelect').val();
         if (selectedActivity === '') {
             const startDate = $('#startDate').val();
             const endDate = $('#endDate').val();
             const memberCount = $('#memberCount').val();
 
-            if (!startDate || !endDate || !memberCount) {
+            if (!startDate || !endDate || !memberCount || memberCount <= 0) {
                 alert("새 활동을 등록하려면 시작일, 종료일, 인원수를 모두 입력해야 합니다.");
                 return;
             }
