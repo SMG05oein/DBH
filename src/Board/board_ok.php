@@ -218,10 +218,22 @@ if($checkForm == '1'){ //게시글 등록
 //    exit;
     // 성공 메시지 후 리다이렉트
     echo "<script>alert('게시글이 성공적으로 수정되었습니다.'); location.href='/DBH/src/Board/board_write.php?board_id=$board_id'</script>";
-}else if($checkForm == 3){ //카테고리 삭제
-    header('Content-Type: application/json');
-    $board_id = $_POST['board_id'];
-    $categoryId = $_POST['categoryId'];
+    }else if($checkForm == 3){ //카테고리 삭제
+        header('Content-Type: application/json');
+        $board_id = $_POST['board_id'];
+        $categoryId = $_POST['categoryId'];
+
+        // 현재 카테고리 개수 확인
+    $sql = "SELECT COUNT(*) cnt FROM board_categories WHERE fk_board_id = ?";
+    $cnt = O($sql, ['fk_board_id' => $board_id]);
+
+    if ($cnt['cnt'] <= 1) {
+        echo json_encode([
+            'message' => '카테고리는 최소 1개 이상 필요합니다.'
+        ]);
+        exit;
+    }
+
     $where = array(
         'fk_board_id'=>$board_id,
         'fk_category_id'=>$categoryId,
