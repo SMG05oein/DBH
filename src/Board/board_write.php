@@ -51,7 +51,7 @@ if(isLogin() && !$toIndex){
         $my_member_id = 0;
         $dbStatus = $Trow['status'];
 
-        if($user_id) { // 로그인이 되어 있다면  
+        if($user_id) { // 로그인이 되어 있다면
             // 1. 내 고유 member_id 찾기
             $sql = "SELECT member_id FROM members WHERE user_id = ?";
             $bind = array('user_id' => $user_id);
@@ -66,6 +66,8 @@ if(isLogin() && !$toIndex){
                 $apply_cnt = CNT($sql, $bind);
                 if($apply_cnt > 0) $isApplied = true;
             }
+        }else{
+
         }
         /*           end           */
     }

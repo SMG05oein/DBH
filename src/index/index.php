@@ -35,7 +35,6 @@ if($cr){
     SELECT b.*, m.user_name
     FROM board b
         inner join members m on b.fk_member_id = m.member_id
-        inner join board_categories bc on bc.fk_board_id = b.board_id
         WHERE". $baseWhere . $where . ' GROUP BY b.board_id, m.user_name';
     $orderBy = 'ORDER BY board_id DESC';
 }
